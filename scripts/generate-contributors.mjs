@@ -53,7 +53,7 @@ function storyAttributions() {
     for (const m of text.matchAll(re)) {
       const login = m[1];
       if (!attributions.has(login)) attributions.set(login, []);
-      attributions.get(login).push(`story: \`${file}\``);
+      attributions.get(login).push(`案例：\`${file}\``);
     }
   }
   return attributions;
@@ -120,13 +120,14 @@ async function main() {
 
   const generated = new Date().toISOString().slice(0, 10);
   const lines = [
-    '# Contributors',
+    '<a id="contributors"></a>',
+    '# 贡献者',
     '',
-    'Thank you to everyone who shipped docs, stories, examples, and tool fixes.',
+    '感谢每一位为文档、案例、示例和工具修复做出贡献的成员。',
     '',
-    `*Generated ${generated} via \`node scripts/generate-contributors.mjs\` — re-run after merges.*`,
+    `*由 \`node scripts/generate-contributors.mjs\` 于 ${generated} 生成——合并后请重新运行。*`,
     '',
-    '| Contributor | Highlights |',
+    '| 贡献者 | 贡献亮点 |',
     '|-------------|------------|',
   ];
 
@@ -135,17 +136,18 @@ async function main() {
     const cell =
       bits.length > 0
         ? bits.map((b) => b.replace(/\|/g, '\\|')).join('<br>')
-        : `${p.contributions} commit${p.contributions === 1 ? '' : 's'}`;
+        : `${p.contributions} 次提交`;
     lines.push(`| [@${p.login}](https://github.com/${p.login}) | ${cell} |`);
   }
 
   lines.push(
     '',
-    '## Your first PR',
+    '<a id="your-first-pr"></a>',
+    '## 你的第一个 PR',
     '',
-    'Pick a scoped ~15 min task: [Contributor quickstart](' + CONTRIBUTOR_QUICKSTART + ').',
+    '选择一项范围明确、约 15 分钟可完成的任务：[贡献者快速入门](' + CONTRIBUTOR_QUICKSTART + ')。',
     '',
-    'Same-day review on stories, adopters, and docs — see [CONTRIBUTING.md](./CONTRIBUTING.md).',
+    '案例、采用者和文档类贡献可在当天获得审查——请参阅 [CONTRIBUTING.md](./CONTRIBUTING.md)。',
     '',
   );
 
@@ -154,15 +156,15 @@ async function main() {
   if (check) {
     const existing = readFileSync(OUT, 'utf8');
     if (existing !== content) {
-      console.error('CONTRIBUTORS.md is out of date. Run: node scripts/generate-contributors.mjs');
+      console.error('CONTRIBUTORS.md 已过期。请运行：node scripts/generate-contributors.mjs');
       process.exit(1);
     }
-    console.log('CONTRIBUTORS.md is up to date.');
+    console.log('CONTRIBUTORS.md 已是最新。');
     return;
   }
 
   writeFileSync(OUT, content);
-  console.log(`Wrote ${OUT} (${sorted.length} contributors)`);
+  console.log(`已写入 ${OUT}（${sorted.length} 位贡献者）`);
 }
 
 main().catch((err) => {

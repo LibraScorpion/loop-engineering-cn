@@ -1,127 +1,135 @@
-# Primitives Matrix — Grok, Claude Code, Codex, OpenClaw, Opencode, Cursor, Windsurf, Hermes
+<a id="primitives-matrix--grok-claude-code-codex-openclaw-opencode-cursor-windsurf-hermes"></a>
+# 原语矩阵 — Grok、Claude Code、Codex、OpenClaw、Opencode、Cursor、Windsurf、Hermes
 
-Tool-agnostic loop design: the **capability** is what matters, not the product name. This matrix maps each primitive to how it appears in eight major agent environments.
+与工具无关的循环设计：重要的是**能力**，而非产品名称。本矩阵展示了每种原语在八种主要智能体环境中的具体形式。
 
-| Primitive | Job in the Loop | Grok Build TUI | Claude Code | Codex | OpenClaw | Opencode | Cursor | Windsurf | Hermes |
+| 原语 | 在循环中的作用 | Grok Build TUI | Claude Code | Codex | OpenClaw | Opencode | Cursor | Windsurf | Hermes |
 |-----------|-----------------|----------------|-------------|-------|----------|----------|--------|----------|--------|
-| **Automations / Scheduling** | Discovery + triage on a cadence | `/loop [interval] <prompt>`, `scheduler_create` / `scheduler_list` / `scheduler_delete` (`recurring`, `durable`, `fireImmediately`), `monitor` for streaming events | `/loop`, scheduled tasks, cron, hooks, GitHub Actions | [Automations tab](https://developers.openai.com/codex/app/automations): project, prompt, cadence, environment; Triage inbox | [`openclaw cron`](https://docs.openclaw.ai/automation/cron-jobs) (`--cron` / `--every` / `--at`, isolated or main session); webhooks (`POST /hooks/agent`, `/hooks/wake`); heartbeat | OS cron / systemd timer / GitHub Action invokes `opencode run "..."`; headless server via `opencode serve` | Cloud Agents + **Automations** (cron, webhooks, Linear/GitHub/Slack triggers); foreground Agent chat for ad-hoc `/loop`-style prompts | Cascade **Workflows** (`/workflow-name`, manual invoke); pair with GitHub Actions or external cron for true scheduling | [`hermes cron create "<cron>" --skill … --deliver local\|origin\|<channel>\|platform:chat_id:thread_id --workdir "$PWD"`](https://hermes-agent.nousresearch.com/docs); webhooks via `POST /hooks/agent`; per-job `context_from` chains upstream job stdout into downstream prompt |
-| **Run-until-done** | Keep working until a verifiable condition holds | [`/goal`](https://github.com/cobusgreyling/goal-engineering) + `update_goal` — persistent objective across turns ([Goal Engineering](https://github.com/cobusgreyling/goal-engineering)) | `/goal` — separate model checks completion | `/goal` — pause/resume, verifiable stop condition | Recurring isolated cron with explicit stop condition in `--message`; delegate via `coding-agent` skill to external CLI; hand off bounded work to Goal Engineering | Bounded `opencode run "<goal + stop condition>"` sessions; follow with verifier agent via `--agent verifier` | Agent mode + **hooks** (`.cursor/hooks.json`) for grind-until-green loops | Workflow steps with explicit verification checkpoints; **Memories** for cross-session continuity | Chained cron jobs via `hermes cron edit --context-from <upstream-id>`; skill loops using `delegate_task` until a verifiable stop condition holds; `hermes cron edit --schedule` adjusts cadence live |
-| **Worktrees** | Safe parallel execution | Subagents with `isolation: "worktree"`, background tasks | `git worktree`, `--worktree`, `isolation: worktree` on subagents | Built-in worktree per thread | `exec` + `git worktree` in agent workspace; `coding-agent` delegates to CLI backends; optional sandbox per agent | Explicit `git worktree` per implementer run; pass worktree path with `--dir` | Git worktree per Composer / Cloud Agent task | Workspace isolation; multiple simultaneous Cascade sessions | Standard `git worktree` inside the cron job; `--workdir` pins tool cwd + injects `AGENTS.md` per job so parallel jobs cannot collide |
-| **Skills** | Persistent project knowledge | `SKILL.md` in `.grok/skills/` or `~/.grok/skills/`; invoked by name | `SKILL.md` in `.claude/skills/` or project skills | [Agent Skills](https://developers.openai.com/codex/skills) — `$name` or implicit match | `SKILL.md` in `<workspace>/skills/`, `.agents/skills`, or `~/.openclaw/skills`; [AgentSkills](https://agentskills.io) spec; [ClawHub](https://clawhub.ai) + `openclaw skills install` | `SKILL.md` in `skills/<name>/`; `AGENTS.md` for always-on repo rules | `.cursor/rules/*.mdc` (globs, `alwaysApply`), `AGENTS.md`, `.cursor/skills/` | `.devin/rules/` or `.windsurf/rules/` (persistent context); `.windsurf/workflows/` (reusable recipes) | `SKILL.md` under `~/.hermes/skills/<name>/` (user) or `.hermes/skills/<name>/` (project); `hermes skills install/list/inspect`; invoked via `--skill <name>` on cron jobs, or auto-loaded by description match |
-| **Plugins & Connectors** | Reach into real tools | MCP servers via `CallMcpTool` | MCP servers + plugins | Connectors (MCP) + plugins for distribution | MCP + channel plugins (Slack, Telegram, WhatsApp, etc.); browser automation plugin | MCP servers in `opencode.json`; GitHub/Linear/Slack via CLI or MCP bridge | MCP in settings; Cloud Agent sandbox with full connector access | MCP via Cascade settings / `mcp_config.json` | MCP servers via `hermes mcp add`; built-in home channels (Feishu, Slack, Discord, Telegram, WhatsApp, SMS); `hermes send` delivers to any connected channel |
-| **Sub-agents** | Maker / checker split | `Task` tool with `subagent_type`, worktree isolation | Task subagents in `.claude/agents/`, agent teams | Subagents as TOML in `.codex/agents/` | `agents.list` multi-agent routing; isolated cron subagent orchestration; separate verifier agent id | Named agents via `opencode agent`; invoke one role per run with `--agent verifier` or `--agent implementer` | Multi-agent mode, review mode, custom agents in `.cursor/agents/` | Multiple Cascades in parallel; workflow-orchestrated implementer → reviewer steps | `delegate_task(goal=..., role='leaf'\|'orchestrator', toolsets=[...])` — background execution, isolated context, result re-enters as a new message; up to N children in parallel per `delegation.max_concurrent_children` |
-| **State / Memory** | Track what's done across runs | `STATE.md`, todos, durable scheduler state | `AGENTS.md`, progress files, Linear via MCP | Markdown or Linear via connector | `STATE.md`, `HEARTBEAT.md` in workspace; cron persisted in Gateway SQLite; Skill Workshop for skill proposals | `STATE.md`, `LOOP.md`, `AGENTS.md`, session export via `opencode export <sessionID>` | `STATE.md`, `LOOP.md`, Cloud Agent memories | `STATE.md`, Cascade **Memories**, workflow run notes | `STATE.md` in `--workdir`; `HEARTBEAT.md` for periodic polls; persistent facts via `hermes memory` (survive across sessions); cron jobs stored in gateway SQLite |
+| **自动化／调度** | 按运行节奏执行发现与问题分诊 | `/loop [interval] <prompt>`、`scheduler_create` / `scheduler_list` / `scheduler_delete`（`recurring`、`durable`、`fireImmediately`），用 `monitor` 监听流式事件 | `/loop`、计划任务、cron、钩子、GitHub Actions | [Automations 选项卡](https://developers.openai.com/codex/app/automations)：项目、提示词、运行节奏、环境；问题分诊收件箱 | [`openclaw cron`](https://docs.openclaw.ai/automation/cron-jobs)（`--cron` / `--every` / `--at`，隔离会话或主会话）；webhook（`POST /hooks/agent`、`/hooks/wake`）；心跳 | OS cron / systemd timer / GitHub Action 调用 `opencode run "..."`；通过 `opencode serve` 运行无头服务器 | Cloud Agents + **Automations**（cron、webhook、Linear/GitHub/Slack 触发器）；前台 Agent 对话用于临时的 `/loop` 风格提示词 | Cascade **Workflows**（`/workflow-name`，手动调用）；配合 GitHub Actions 或外部 cron 实现真正的调度 | [`hermes cron create "<cron>" --skill … --deliver local\|origin\|<channel>\|platform:chat_id:thread_id --workdir "$PWD"`](https://hermes-agent.nousresearch.com/docs)；通过 `POST /hooks/agent` 使用 webhook；每个任务的 `context_from` 将上游任务的 stdout 串接到下游提示词中 |
+| **运行直至完成** | 持续工作，直到满足可验证的条件 | [`/goal`](https://github.com/cobusgreyling/goal-engineering) + `update_goal`——跨轮次持久保存目标（[Goal Engineering](https://github.com/cobusgreyling/goal-engineering)） | `/goal`——由独立模型检查完成情况 | `/goal`——暂停／恢复、可验证的停止条件 | 使用带有明确 `--message` 停止条件的周期性隔离 cron；通过 `coding-agent` 技能委派给外部 CLI；将有边界的工作交给 Goal Engineering | 有边界的 `opencode run "<goal + stop condition>"` 会话；随后通过 `--agent verifier` 运行验证智能体 | Agent 模式 + **hooks**（`.cursor/hooks.json`），用于持续修复直至全部通过的循环 | 带明确验证检查点的工作流步骤；通过 **Memories** 保持跨会话连续性 | 通过 `hermes cron edit --context-from <upstream-id>` 串接 cron 任务；技能循环使用 `delegate_task`，直到满足可验证的停止条件；`hermes cron edit --schedule` 可实时调整运行节奏 |
+| **Git 工作树** | 安全地并行执行 | 使用 `isolation: "worktree"` 的子智能体、后台任务 | `git worktree`、`--worktree`、子智能体上的 `isolation: worktree` | 每个线程内置一个 Git 工作树 | 智能体工作区中的 `exec` + `git worktree`；`coding-agent` 委派给 CLI 后端；可为每个智能体配置可选沙箱 | 每次执行者运行显式使用 `git worktree`；通过 `--dir` 传递 Git 工作树路径 | 每个 Composer / Cloud Agent 任务使用一个 Git 工作树 | 工作区隔离；同时运行多个 Cascade 会话 | 在 cron 任务中使用标准 `git worktree`；`--workdir` 固定工具 cwd，并为每个任务注入 `AGENTS.md`，避免并行任务冲突 |
+| **技能** | 持久保存项目知识 | `.grok/skills/` 或 `~/.grok/skills/` 中的 `SKILL.md`；按名称调用 | `.claude/skills/` 或项目技能中的 `SKILL.md` | [Agent Skills](https://developers.openai.com/codex/skills)——`$name` 或隐式匹配 | `<workspace>/skills/`、`.agents/skills` 或 `~/.openclaw/skills` 中的 `SKILL.md`；[AgentSkills](https://agentskills.io) 规范；[ClawHub](https://clawhub.ai) + `openclaw skills install` | `skills/<name>/` 中的 `SKILL.md`；用 `AGENTS.md` 保存始终生效的仓库规则 | `.cursor/rules/*.mdc`（glob、`alwaysApply`）、`AGENTS.md`、`.cursor/skills/` | `.devin/rules/` 或 `.windsurf/rules/`（持久上下文）；`.windsurf/workflows/`（可复用流程） | `~/.hermes/skills/<name>/`（用户）或 `.hermes/skills/<name>/`（项目）下的 `SKILL.md`；`hermes skills install/list/inspect`；在 cron 任务中通过 `--skill <name>` 调用，或根据描述匹配自动加载 |
+| **插件与连接器** | 连接真实工具 | 通过 `CallMcpTool` 使用 MCP 服务 | MCP 服务 + 插件 | 连接器（MCP）+ 用于分发的插件 | MCP + 渠道插件（Slack、Telegram、WhatsApp 等）；浏览器自动化插件 | `opencode.json` 中的 MCP 服务；通过 CLI 或 MCP 桥接 GitHub/Linear/Slack | 设置中的 MCP；可完整访问连接器的 Cloud Agent 沙箱 | 通过 Cascade 设置 / `mcp_config.json` 使用 MCP | 通过 `hermes mcp add` 使用 MCP 服务；内置常用渠道（Feishu、Slack、Discord、Telegram、WhatsApp、SMS）；`hermes send` 可投递到任何已连接渠道 |
+| **子智能体** | 执行者／检查者分工 | 带 `subagent_type` 和 Git 工作树隔离的 `Task` 工具 | `.claude/agents/` 中的 Task 子智能体、智能体团队 | `.codex/agents/` 中以 TOML 定义的子智能体 | `agents.list` 多智能体路由；隔离的 cron 子智能体编排；独立的验证智能体 ID | 通过 `opencode agent` 使用具名智能体；每次运行用 `--agent verifier` 或 `--agent implementer` 调用一个角色 | 多智能体模式、审查模式、`.cursor/agents/` 中的自定义智能体 | 并行运行多个 Cascade；工作流编排的执行者 → 审查者步骤 | `delegate_task(goal=..., role='leaf'\|'orchestrator', toolsets=[...])`——后台执行、隔离上下文，结果作为新消息重新进入；按 `delegation.max_concurrent_children` 的限制并行运行最多 N 个子任务 |
+| **状态／记忆** | 跨运行追踪已完成的工作 | `STATE.md`、待办事项、持久化的调度器状态 | `AGENTS.md`、进度文件、通过 MCP 使用 Linear | Markdown 或通过连接器使用 Linear | 工作区中的 `STATE.md`、`HEARTBEAT.md`；cron 持久化到 Gateway SQLite；Skill Workshop 用于提出技能建议 | `STATE.md`、`LOOP.md`、`AGENTS.md`，通过 `opencode export <sessionID>` 导出会话 | `STATE.md`、`LOOP.md`、Cloud Agent 记忆 | `STATE.md`、Cascade **Memories**、工作流运行记录 | `--workdir` 中的 `STATE.md`；用 `HEARTBEAT.md` 进行定期轮询；通过 `hermes memory` 保存跨会话持久事实；cron 任务存储在 gateway SQLite 中 |
 
-**Reference MCP server:** this repo ships [`tools/mcp-server/`](../tools/mcp-server/) — patterns, skills, state, budget, and safety docs as runtime-queryable MCP resources (reduces prompt stuffing). Config example: [`examples/mcp/loop-engineering.mcp.json`](../examples/mcp/loop-engineering.mcp.json).
+**参考 MCP 服务：**本仓库提供 [`tools/mcp-server/`](../tools/mcp-server/)——将模式、技能、状态、预算和安全文档作为运行时可查询的 MCP 资源（减少提示词填充）。配置示例：[`examples/mcp/loop-engineering.mcp.json`](../examples/mcp/loop-engineering.mcp.json)。
 
-## Scheduling Quick Reference
+<a id="scheduling-quick-reference"></a>
+## 调度快速参考
 
-| Use case | Grok | Claude Code | Codex | OpenClaw | Opencode | Cursor | Windsurf | Hermes |
+| 使用场景 | Grok | Claude Code | Codex | OpenClaw | Opencode | Cursor | Windsurf | Hermes |
 |----------|------|-------------|-------|----------|----------|--------|----------|--------|
-| Every 5 minutes | `/loop 5m <prompt>` | `/loop 5m <prompt>` | Automation, 5m cadence | `openclaw cron create "*/5 * * * *" --session isolated --message "..."` | Cron/systemd calls `opencode run "..."` | Automation cron trigger | External cron + `/workflow` or Action | `hermes cron create "*/5 * * * *" --deliver local --skill loop-triage "..."` |
-| Daily morning | `/loop 1d <prompt>` | Cron / `/loop 1d` | Automation, daily | `openclaw cron create "0 7 * * *" --tz ... --session isolated` + optional `--announce` | Cron/systemd calls `opencode run "Run loop-triage"` | Automation daily + `AGENTS.md` context | Daily workflow + Memories | `hermes cron create "0 7 * * *" --name "Daily triage" --deliver local --skill loop-triage --workdir "$PWD" "..."` |
-| Until tests pass | [`/goal`](https://github.com/cobusgreyling/goal-engineering/blob/main/patterns/tests-green.md) + `goal-verifier` skill (or loop + verifier) | `/goal all tests pass` | `/goal` | Isolated cron + verifier in message, or `coding-agent` + external CLI | `opencode run "Goal: all tests pass. Stop when verifier approves."` | Hooks grind-until-green | Workflow with test/fix loop | Bounded skill loop using `delegate_task` for the maker + a second `delegate_task` as checker; or chained cron jobs with `context_from` |
-| Survive restart | `scheduler_create` with `durable: true` | Hooks + persisted config | Automation (server-side) | Cron jobs persist in Gateway SQLite | systemd timer + committed `STATE.md` + exported sessions | Cloud Agent + repo-persisted state | Memories + committed `STATE.md` | Cron jobs persist in gateway SQLite; `--workdir` re-injects project context on every tick |
-| Event-driven (CI fail) | `monitor` or GitHub Action | GitHub Action + webhook | Automation + webhook | `POST /hooks/agent` or mapped webhooks | GitHub Action / webhook bridge calls `opencode run` | Automation on PR/issue events | GitHub Action triggers + `/workflow` | `POST /hooks/agent` with `{"message":"…","name":"…","deliver":"local"}` |
+| 每 5 分钟 | `/loop 5m <prompt>` | `/loop 5m <prompt>` | Automation，5 分钟运行节奏 | `openclaw cron create "*/5 * * * *" --session isolated --message "..."` | Cron/systemd 调用 `opencode run "..."` | Automation cron 触发器 | 外部 cron + `/workflow` 或 Action | `hermes cron create "*/5 * * * *" --deliver local --skill loop-triage "..."` |
+| 每天早晨 | `/loop 1d <prompt>` | Cron / `/loop 1d` | Automation，每日运行 | `openclaw cron create "0 7 * * *" --tz ... --session isolated` + 可选的 `--announce` | Cron/systemd 调用 `opencode run "Run loop-triage"` | 每日 Automation + `AGENTS.md` 上下文 | 每日工作流 + Memories | `hermes cron create "0 7 * * *" --name "Daily triage" --deliver local --skill loop-triage --workdir "$PWD" "..."` |
+| 直到测试通过 | [`/goal`](https://github.com/cobusgreyling/goal-engineering/blob/main/patterns/tests-green.md) + `goal-verifier` 技能（或循环 + 验证智能体） | `/goal all tests pass` | `/goal` | 隔离 cron + 消息中的验证智能体，或 `coding-agent` + 外部 CLI | `opencode run "Goal: all tests pass. Stop when verifier approves."` | 通过钩子持续修复直至全部通过 | 包含测试／修复循环的工作流 | 使用 `delegate_task` 运行执行者的有边界技能循环，再用第二个 `delegate_task` 作为检查者；或通过 `context_from` 串接 cron 任务 |
+| 重启后继续运行 | 带 `durable: true` 的 `scheduler_create` | 钩子 + 持久化配置 | Automation（服务端） | cron 任务持久化到 Gateway SQLite | systemd timer + 已提交的 `STATE.md` + 已导出的会话 | Cloud Agent + 仓库持久化状态 | Memories + 已提交的 `STATE.md` | cron 任务持久化到 gateway SQLite；`--workdir` 在每次触发时重新注入项目上下文 |
+| 事件驱动（CI 失败） | `monitor` 或 GitHub Action | GitHub Action + webhook | Automation + webhook | `POST /hooks/agent` 或已映射的 webhook | GitHub Action / webhook 桥调用 `opencode run` | PR/issue 事件上的 Automation | GitHub Action 触发器 + `/workflow` | `POST /hooks/agent`，内容为 `{"message":"…","name":"…","deliver":"local"}` |
 
-## Skill Packaging
+<a id="skill-packaging"></a>
+## 技能打包
 
-| Concept | Grok | Claude Code | Codex | OpenClaw | Opencode | Cursor | Windsurf | Hermes |
+| 概念 | Grok | Claude Code | Codex | OpenClaw | Opencode | Cursor | Windsurf | Hermes |
 |---------|------|-------------|-------|----------|----------|--------|----------|--------|
-| Authoring format | `SKILL.md` + optional scripts/references | Same | Same | Same ([AgentSkills](https://agentskills.io)) | Same (`SKILL.md` under `skills/<name>/`) | `SKILL.md` or `.mdc` rules with frontmatter | Markdown rules + workflow files | `SKILL.md` + optional `references/`, `templates/`, `scripts/`, `assets/` ([AgentSkills](https://agentskills.io) spec) |
-| Distribution | Copy to `.grok/skills/` or user skills dir | Plugin / copy to project | Plugin bundle | `<workspace>/skills/`, ClawHub, `openclaw skills install` | Copy to `skills/`; keep project rules in `AGENTS.md` | `.cursor/skills/` or `.cursor/rules/` | `.windsurf/rules/` + `.windsurf/workflows/` in repo | `~/.hermes/skills/<name>/` (user) or `.hermes/skills/<name>/` (project); `hermes skills install <name>` from skills.sh, ClawHub, well-known endpoints, GitHub |
-| Invocation | Skill name in prompt or auto-match on description | `$skill-name` or implicit | `$skill-name` | Slash command or auto-injected in system prompt | Name the skill in the `opencode run` message, or configure named agents in `opencode.json` | Rules auto-apply by glob; skills on demand | `/workflow-name` or Rules always-on in Cascade | `--skill <name>` on cron jobs; auto-loaded by description match mid-session; `--skills X,Y` on `hermes chat` for one-off preload |
+| 编写格式 | `SKILL.md` + 可选的脚本／参考资料 | 相同 | 相同 | 相同（[AgentSkills](https://agentskills.io)） | 相同（`skills/<name>/` 下的 `SKILL.md`） | `SKILL.md` 或带 frontmatter 的 `.mdc` 规则 | Markdown 规则 + 工作流文件 | `SKILL.md` + 可选的 `references/`、`templates/`、`scripts/`、`assets/`（[AgentSkills](https://agentskills.io) 规范） |
+| 分发 | 复制到 `.grok/skills/` 或用户技能目录 | 插件／复制到项目 | 插件包 | `<workspace>/skills/`、ClawHub、`openclaw skills install` | 复制到 `skills/`；在 `AGENTS.md` 中保留项目规则 | `.cursor/skills/` 或 `.cursor/rules/` | 仓库中的 `.windsurf/rules/` + `.windsurf/workflows/` | `~/.hermes/skills/<name>/`（用户）或 `.hermes/skills/<name>/`（项目）；通过 `hermes skills install <name>` 从 skills.sh、ClawHub、well-known endpoint 或 GitHub 安装 |
+| 调用 | 在提示词中写技能名，或根据描述自动匹配 | `$skill-name` 或隐式调用 | `$skill-name` | 斜杠命令，或自动注入系统提示词 | 在 `opencode run` 消息中指定技能，或在 `opencode.json` 中配置具名智能体 | 规则按 glob 自动应用；按需使用技能 | `/workflow-name`，或 Cascade 中始终生效的规则 | cron 任务上的 `--skill <name>`；会话期间根据描述匹配自动加载；在 `hermes chat` 上用 `--skills X,Y` 进行一次性预加载 |
 
-## Sub-agent Patterns
+<a id="sub-agent-patterns"></a>
+## 子智能体模式
 
-| Split | When to use | Grok | Claude Code | Codex | OpenClaw | Opencode | Cursor | Windsurf | Hermes |
+| 分工 | 适用场景 | Grok | Claude Code | Codex | OpenClaw | Opencode | Cursor | Windsurf | Hermes |
 |-------|-------------|------|-------------|-------|----------|----------|--------|----------|--------|
-| Implementer → Verifier | Any unattended code change | `Task` + different instructions/model | `.claude/agents/reviewer.md` | TOML agent with higher `reasoning_effort` | Separate `agents.list` id or verifier block in cron message | `opencode run "..." --agent implementer` in worktree, then `opencode run "Verify diff" --agent verifier --file diff.patch` | Review mode or second Cloud Agent pass | Second Cascade or workflow review step | Two sequential `delegate_task` calls (first `role='leaf'` with terminal+file; second `role='leaf'` with review-only toolsets); or two chained cron jobs via `context_from` |
-| Explorer → Implementer | Large unfamiliar codebase | `explore` subagent_type | Explorer agent | Fast read-only subagent | `--light-context` cron + follow-up isolated job | First `opencode run "read-only exploration..."`, then follow-up implementer in a worktree | `@codebase` + plan mode first | Audit workflow (read-only) then implement | First `delegate_task(toolsets=['file'], goal='read-only exploration…')`, then follow-up `delegate_task(toolsets=['terminal','file'], goal='implement…')` in a worktree |
-| Triage only | Report-first loops | `loop-triage` skill | `$loop-triage` | Automation calls skill | `loop-triage` + isolated cron; restrict `--tools` | `opencode run "Run loop-triage. Do not edit code."` | `AGENTS.md` + report-only rule | Triage workflow, no edit steps | `loop-triage` skill + `hermes cron` with `--deliver local`; restrict skill's tool list; no `delegate_task` in the prompt |
+| 执行者 → 验证智能体 | 任何无人值守的代码变更 | `Task` + 不同的指令／模型 | `.claude/agents/reviewer.md` | 配置了更高 `reasoning_effort` 的 TOML 智能体 | 独立的 `agents.list` ID，或 cron 消息中的验证智能体块 | 在 Git 工作树中运行 `opencode run "..." --agent implementer`，随后运行 `opencode run "Verify diff" --agent verifier --file diff.patch` | 审查模式或第二轮 Cloud Agent 检查 | 第二个 Cascade 或工作流审查步骤 | 依次调用两次 `delegate_task`（第一次以 `role='leaf'` 使用 terminal+file；第二次以 `role='leaf'` 使用只审查工具集）；或通过 `context_from` 串接两个 cron 任务 |
+| 探索者 → 执行者 | 大型且不熟悉的代码库 | `explore` subagent_type | 探索智能体 | 快速只读子智能体 | `--light-context` cron + 后续隔离任务 | 先运行 `opencode run "read-only exploration..."`，再在 Git 工作树中运行后续执行者 | 先使用 `@codebase` + 计划模式 | 先运行审计工作流（只读），再实施 | 先运行 `delegate_task(toolsets=['file'], goal='read-only exploration…')`，再在 Git 工作树中运行后续 `delegate_task(toolsets=['terminal','file'], goal='implement…')` |
+| 仅问题分诊 | 报告优先的循环 | `loop-triage` 技能 | `$loop-triage` | Automation 调用技能 | `loop-triage` + 隔离 cron；限制 `--tools` | `opencode run "Run loop-triage. Do not edit code."` | `AGENTS.md` + 仅报告规则 | 问题分诊工作流，不含编辑步骤 | `loop-triage` 技能 + 带 `--deliver local` 的 `hermes cron`；限制技能的工具列表；提示词中不使用 `delegate_task` |
 
-## State Conventions
+<a id="state-conventions"></a>
+## 状态约定
 
-Recommended filenames (pick one spine per project):
+推荐的文件名（每个项目选择一个主干）：
 
-| File | Purpose |
+| 文件 | 用途 |
 |------|---------|
-| `STATE.md` | General loop memory (daily triage) |
-| `issue-triage-state.md` | Issue queue health (feeder for daily triage) |
-| `pr-babysitter-state.md` | PR-specific watcher state |
-| `ci-sweeper-state.md` | Active CI failures + attempt counts |
-| `post-merge-state.md` | Cleanup backlog from recent merges |
+| `STATE.md` | 通用循环记忆（每日问题分诊） |
+| `issue-triage-state.md` | Issue 队列健康状况（每日问题分诊的输入源） |
+| `pr-babysitter-state.md` | PR 专用监控状态 |
+| `ci-sweeper-state.md` | 活跃的 CI 失败 + 尝试次数 |
+| `post-merge-state.md` | 最近合并产生的清理积压 |
 
-Linear / GitHub Projects work equally well — the loop must **read and write** the same store every run.
+Linear / GitHub Projects 同样适用——循环每次运行时都必须**读写**同一个存储。
 
-## Choosing a Tool
+<a id="choosing-a-tool"></a>
+## 选择工具
 
-You do not need to pick one forever. A well-designed loop transfers:
+你不必永远固定使用一种工具。设计良好的循环可以迁移：
 
-1. Write the **skill** (tool-agnostic `SKILL.md`)
-2. Define the **state schema** (markdown or JSON)
-3. Document the **verification split** (who checks whom)
-4. Map scheduling to your current TUI, editor, or Action
+1. 编写**技能**（与工具无关的 `SKILL.md`）
+2. 定义**状态模式**（Markdown 或 JSON）
+3. 记录**验证分工**（由谁检查谁）
+4. 将调度映射到当前的 TUI、编辑器或 Action
 
-For opencode, the transfer usually means `skills/`, `STATE.md`, `AGENTS.md`, and cron/systemd invoking `opencode run`. See [examples/](../examples/) for the same pattern implemented across tools.
+对于 Opencode，迁移通常意味着使用 `skills/`、`STATE.md`、`AGENTS.md`，并让 cron/systemd 调用 `opencode run`。参见[示例](../examples/)，了解同一模式在不同工具中的实现。
 
-## Copy-paste starters (Daily Triage, L1)
+<a id="copy-paste-starters-daily-triage-l1"></a>
+## 可复制粘贴的起步模板（每日问题分诊，L1）
 
-| Tool | Starter |
+| 工具 | 起步模板 |
 |------|---------|
 | Grok | [starters/minimal-loop](../starters/minimal-loop/) |
 | Claude Code | [starters/minimal-loop-claude](../starters/minimal-loop-claude/) |
 | Codex | [starters/minimal-loop-codex](../starters/minimal-loop-codex/) |
-| OpenClaw | [examples/openclaw/daily-triage.md](../examples/openclaw/daily-triage.md) — copy `skills/` + `STATE.md`; no `loop-init` yet |
+| OpenClaw | [examples/openclaw/daily-triage.md](../examples/openclaw/daily-triage.md)——复制 `skills/` + `STATE.md`；暂不支持 `loop-init` |
 | Opencode | [starters/minimal-loop-opencode](../starters/minimal-loop-opencode/) |
-| Cursor / Windsurf | Copy `SKILL.md` + `STATE.md` from any starter; map scheduling to editor Automations or Workflows (see appendix) |
-| Hermes | [examples/hermes/daily-triage.md](../examples/hermes/daily-triage.md) — copy `starters/minimal-loop/STATE.md.example` to project root; install `loop-triage` skill under `~/.hermes/skills/`; schedule with `hermes cron create`. No `loop-init --tool hermes` yet — this bridge is the current path. |
+| Cursor / Windsurf | 从任一起步模板复制 `SKILL.md` + `STATE.md`；将调度映射到编辑器的 Automations 或 Workflows（参见附录） |
+| Hermes | [examples/hermes/daily-triage.md](../examples/hermes/daily-triage.md)——将 `starters/minimal-loop/STATE.md.example` 复制到项目根目录；在 `~/.hermes/skills/` 下安装 `loop-triage` 技能；通过 `hermes cron create` 调度。暂不支持 `loop-init --tool hermes`——这种桥接是当前采用的路径。 |
 
-Audit after copying: `npx @cobusgreyling/loop-audit . --suggest`
+复制后审计：`npx @cobusgreyling/loop-audit . --suggest`
 
-Scaffold automatically: `npx @cobusgreyling/loop-init . --pattern daily-triage --tool grok`
+自动搭建脚手架：`npx @cobusgreyling/loop-init . --pattern daily-triage --tool grok`
 
-## Goals (run-until-done)
+<a id="goals-run-until-done"></a>
+## 目标（运行直至完成）
 
-Loops discover ongoing work; **goals finish bounded tasks**. Canonical reference: **[Goal Engineering](https://github.com/cobusgreyling/goal-engineering)** (`/goal`, `update_goal`, `GOAL.md`, `goal-verifier`).
+循环发现持续存在的工作；**目标完成有边界的任务**。权威参考：**[Goal Engineering](https://github.com/cobusgreyling/goal-engineering)**（`/goal`、`update_goal`、`GOAL.md`、`goal-verifier`）。
 
-| Handoff | Command |
+| 交接 | 命令 |
 |---------|---------|
-| Loop found a fixable item | `/goal Read STATE.md top item. Complete per goal-engineering pattern. goal-verifier before done.` |
-| Audit goal readiness | `npx @cobusgreyling/goal-audit . --suggest` |
-| Goal vs loop decision | [goal-vs-loop.md](https://github.com/cobusgreyling/goal-engineering/blob/main/docs/goal-vs-loop.md) |
+| 循环发现了可修复项 | `/goal Read STATE.md top item. Complete per goal-engineering pattern. goal-verifier before done.` |
+| 审计目标就绪度 | `npx @cobusgreyling/goal-audit . --suggest` |
+| 判断使用目标还是循环 | [goal-vs-loop.md](https://github.com/cobusgreyling/goal-engineering/blob/main/docs/goal-vs-loop.md) |
 
-## Appendix: Editor transfer recipes (Opencode, Cursor & Windsurf)
+<a id="appendix-editor-transfer-recipes-opencode-cursor--windsurf"></a>
+## 附录：编辑器迁移方案（Opencode、Cursor 和 Windsurf）
 
-Transfer recipes map the same loop shape onto each host:
+迁移方案将相同的循环形态映射到各个宿主：
 
-| Step | Opencode | Cursor | Windsurf |
+| 步骤 | Opencode | Cursor | Windsurf |
 |------|----------|--------|----------|
-| 1. Skills | Copy `templates/SKILL.md.loop-triage` → `skills/loop-triage/SKILL.md`; add always-on rules in `AGENTS.md` | Copy `templates/SKILL.md.loop-triage` → `.cursor/skills/loop-triage/SKILL.md`; add always-on triage rules in `.cursor/rules/` | Copy skill content into `.windsurf/rules/loop-triage.md` |
-| 2. State | `cp starters/minimal-loop-opencode/STATE.md.example STATE.md` | `cp starters/minimal-loop/STATE.md.example STATE.md` | Same — commit `STATE.md` at repo root |
-| 3. Scheduling | Cron/systemd calls `opencode run "Run loop-triage"`; use `--session` / `--continue` for continuity | Cloud Automation (cron) or manual Agent prompt on cadence | Create `.windsurf/workflows/daily-triage.md`, invoke `/daily-triage` |
-| 4. Verification | Create a verifier named agent with `opencode agent`; invoke via `opencode run "Verify diff" --agent verifier --file diff.patch` | `.cursor/agents/loop-verifier.md` from `templates/SKILL.md.verifier` | Add review step at end of workflow; human gate on denylist paths |
-| 5. Connectors | Configure MCP or CLI bridges in `opencode.json` | Enable GitHub MCP read-only for issue/PR discovery | Configure GitHub MCP in Cascade settings |
+| 1. 技能 | 将 `templates/SKILL.md.loop-triage` 复制到 `skills/loop-triage/SKILL.md`；在 `AGENTS.md` 中添加始终生效的规则 | 将 `templates/SKILL.md.loop-triage` 复制到 `.cursor/skills/loop-triage/SKILL.md`；在 `.cursor/rules/` 中添加始终生效的问题分诊规则 | 将技能内容复制到 `.windsurf/rules/loop-triage.md` |
+| 2. 状态 | `cp starters/minimal-loop-opencode/STATE.md.example STATE.md` | `cp starters/minimal-loop/STATE.md.example STATE.md` | 相同——在项目根目录提交 `STATE.md` |
+| 3. 调度 | Cron/systemd 调用 `opencode run "Run loop-triage"`；使用 `--session` / `--continue` 保持连续性 | Cloud Automation（cron）或按运行节奏手动输入 Agent 提示词 | 创建 `.windsurf/workflows/daily-triage.md`，调用 `/daily-triage` |
+| 4. 验证 | 使用 `opencode agent` 创建具名验证智能体；通过 `opencode run "Verify diff" --agent verifier --file diff.patch` 调用 | 从 `templates/SKILL.md.verifier` 创建 `.cursor/agents/loop-verifier.md` | 在工作流末尾添加审查步骤；对拒绝列表中的路径设置人工审核关卡 |
+| 5. 连接器 | 在 `opencode.json` 中配置 MCP 或 CLI 桥接 | 为发现 issue/PR 启用只读 GitHub MCP | 在 Cascade 设置中配置 GitHub MCP |
 
-## Appendix: Codeium (Windsurf)
+<a id="appendix-codeium-windsurf"></a>
+## 附录：Codeium（Windsurf）
 
-Codeium rebranded its agentic surface to Windsurf; the agent itself is called
-Cascade. There is no standalone Codeium CLI — "Codeium" as a brand today
-mostly covers enterprise completion analytics, not agent loop primitives.
-This appendix documents the **Windsurf IDE / Cascade agent**, the same
-surface referenced in the Editor transfer recipes table above.
+Codeium 已将其智能体界面更名为 Windsurf；智能体本身名为 Cascade。
+Codeium 没有独立的 CLI——如今的“Codeium”品牌主要涵盖企业代码补全分析，而非智能体循环原语。
+本附录记录 **Windsurf IDE / Cascade 智能体**，也就是上方编辑器迁移方案表中提到的同一界面。
 
-| Primitive | Windsurf (Cascade) mapping |
+| 原语 | Windsurf（Cascade）映射 |
 |-----------|----------------------------|
-| Scheduling | No native cron-style scheduler. Use `.windsurf/workflows/<name>.md` invoked manually via `/workflow-name`, or pair with an external scheduler (cron, systemd, GitHub Actions) that reopens the workspace and triggers a workflow. |
-| Skills / Rules path | Project rules: `.windsurfrules` (root) or `.windsurf/rules/` for multiple files. Global rules across all projects: `~/.codeium/windsurf/memories/global_rules.md`. |
-| State | No native `STATE.md` convention. Commit `STATE.md` at the repo root manually, same as other editor-hosted tools; Cascade's built-in Memories system (per-workspace) can supplement but does not replace a committed state file. |
-| Maker/checker split | No native subagent or reviewer role. Workaround: run the maker in one Cascade session, then open a second session (or manually review the diff view) as the checker before accepting changes. |
-| Worktrees | Not native. Use standard git branches/worktrees and review through Cascade's diff view before merge, same as Aider. |
-| Connectors | Configure MCP servers directly in Cascade/Windsurf settings for GitHub, issue/PR discovery, or other external context. |
-| Honest gaps | No durable scheduler for headless/unattended runs, no built-in maker/checker separation, no first-class state-file convention — Windsurf's loop primitives are almost entirely manual and session-driven today. |
+| 调度 | 没有原生的 cron 风格调度器。使用 `.windsurf/workflows/<name>.md` 并通过 `/workflow-name` 手动调用，或配合外部调度器（cron、systemd、GitHub Actions）重新打开工作区并触发工作流。 |
+| 技能／规则路径 | 项目规则：根目录中的 `.windsurfrules`，或使用 `.windsurf/rules/` 存放多个文件。跨所有项目的全局规则：`~/.codeium/windsurf/memories/global_rules.md`。 |
+| 状态 | 没有原生的 `STATE.md` 约定。与其他编辑器宿主工具一样，手动在仓库根目录提交 `STATE.md`；Cascade 内置的 Memories 系统（每个工作区）可以作为补充，但不能替代已提交的状态文件。 |
+| 执行者／检查者分工 | 没有原生的子智能体或审查者角色。变通方案：在一个 Cascade 会话中运行执行者，然后在接受变更前打开第二个会话作为检查者（或手动审查差异视图）。 |
+| Git 工作树 | 不原生支持。与 Aider 相同，使用标准 Git 分支／工作树，并在合并前通过 Cascade 的差异视图进行审查。 |
+| 连接器 | 直接在 Cascade/Windsurf 设置中配置 MCP 服务，用于 GitHub、issue/PR 发现或其他外部上下文。 |
+| 客观不足 | 没有用于无头／无人值守运行的持久调度器，没有内置的执行者／检查者分工，也没有一等的状态文件约定——目前 Windsurf 的循环原语几乎完全依赖手动操作和会话驱动。 |
 
-Minimal transfer recipe:
+最小迁移方案：
 
 ```bash
 mkdir -p .windsurf/rules .windsurf/workflows
@@ -129,7 +137,9 @@ cp templates/SKILL.md.loop-triage .windsurf/rules/loop-triage.md
 cp starters/minimal-loop/STATE.md.example STATE.md
 ```
 
-Week-one Daily Triage workflow (`.windsurf/workflows/daily-triage.md`), report-only:
+第一周的每日问题分诊工作流（`.windsurf/workflows/daily-triage.md`），仅报告：
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```text
 Run loop-triage for this repository.
@@ -139,9 +149,11 @@ Update STATE.md with High Priority and Watch List only.
 Do not edit source code in week one.
 ```
 
-Invoke with `/daily-triage` in the Cascade panel.
+在 Cascade 面板中通过 `/daily-triage` 调用。
 
-Verifier pass for later L2 work — open a second Cascade session:
+后续 L2 工作的验证步骤——打开第二个 Cascade 会话：
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```text
 Act as loop-verifier.
@@ -150,24 +162,24 @@ Review the current git diff against STATE.md goals.
 Report PASS/FAIL and do not edit files.
 ```
 
-After copying: map scheduling to manual `/workflow-name` invocation or an external
-scheduler until Windsurf has a first-class cron-equivalent. Use `.windsurfrules`
-or `.windsurf/rules/` for always-on repo guidance, and a second Cascade session
-(or human diff review) for maker/checker separation.
+复制后：在 Windsurf 提供一等的 cron 等效功能之前，将调度映射到手动调用 `/workflow-name` 或外部调度器。使用 `.windsurfrules` 或 `.windsurf/rules/` 保存始终生效的仓库指导，并通过第二个 Cascade 会话（或人工差异审查）实现执行者／检查者分工。
 
-## Appendix: Aider CLI
+<a id="appendix-aider-cli"></a>
+## 附录：Aider CLI
 
-Aider is CLI-first rather than a loop host with native schedulers, so map the same primitives from [Choosing a Tool](#choosing-a-tool) onto shell scripts, cron, and git branches.
+Aider 是以 CLI 为先的工具，而不是带原生调度器的循环宿主，因此应将[选择工具](#choosing-a-tool)中的相同原语映射到 shell 脚本、cron 和 Git 分支。
 
-| Primitive | Aider mapping |
+| 原语 | Aider 映射 |
 |-----------|---------------|
-| Scheduling | Run one-shot scripted sessions from cron/systemd/GitHub Actions with `aider --message` or `aider --message-file`, or use `--watch-files` for comment-triggered work. |
-| Skills | Load loop instructions as read-only context with `--read templates/SKILL.md.loop-triage` or a project-specific conventions file. |
-| State | Keep `STATE.md` at the repo root and pass it as the editable file for triage loops; use pattern-specific state files such as `pr-babysitter-state.md` for specialized loops. |
-| Maker/checker split | Run the implementer in one Aider session/branch, then run a second read-only reviewer session over `git diff` or `diff.patch` before any commit/PR. |
-| Connectors | Prefer CLI tools or MCP sidecars called from scripts; keep credentials out of prompts and state files. |
+| 调度 | 通过 `aider --message` 或 `aider --message-file` 从 cron/systemd/GitHub Actions 运行一次性脚本会话，或使用 `--watch-files` 处理由注释触发的工作。 |
+| 技能 | 使用 `--read templates/SKILL.md.loop-triage` 或项目专用约定文件，将循环指令作为只读上下文加载。 |
+| 状态 | 将 `STATE.md` 保存在仓库根目录，并将其作为问题分诊循环的可编辑文件传入；专业化循环使用特定模式的状态文件，例如 `pr-babysitter-state.md`。 |
+| 执行者／检查者分工 | 在一个 Aider 会话／分支中运行执行者，然后在提交或创建 PR 前，针对 `git diff` 或 `diff.patch` 运行第二个只读审查者会话。 |
+| 连接器 | 优先使用由脚本调用的 CLI 工具或 MCP sidecar；不要将凭据写入提示词和状态文件。 |
 
-Week-one Daily Triage command (report-only, state updates only):
+第一周的每日问题分诊命令（仅报告，只更新状态）：
+
+> 中文说明：以下命令包含供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```bash
 aider STATE.md \
@@ -177,7 +189,9 @@ aider STATE.md \
   --message "Run loop-triage. Update STATE.md with High Priority and Watch List only. Do not edit source code in week one."
 ```
 
-Verifier pass for later L2 work:
+后续 L2 工作的验证步骤：
+
+> 中文说明：以下命令包含供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```bash
 git diff > diff.patch
@@ -187,22 +201,23 @@ aider --read diff.patch --read STATE.md \
   --message "Act as loop-verifier. Review the diff against STATE.md goals. Report PASS/FAIL and do not edit files."
 ```
 
-Transfer recipe: copy the tool-agnostic `SKILL.md` + state schema from this repo; map scheduling to cron, systemd, or CI until Aider is wrapped by a richer loop scheduler.
+迁移方案：从本仓库复制与工具无关的 `SKILL.md` + 状态模式；在 Aider 被更完善的循环调度器封装之前，将调度映射到 cron、systemd 或 CI。
 
-## Appendix: Zed
+<a id="appendix-zed"></a>
+## 附录：Zed
 
-Zed is editor-hosted rather than a standalone loop scheduler, so map the same primitives from [Choosing a Tool](#choosing-a-tool) onto [Agent Panel](https://zed.dev/docs/ai/agent-panel) threads, [Instructions](https://zed.dev/docs/ai/instructions), [Skills](https://zed.dev/docs/ai/skills), [Agent Profiles](https://zed.dev/docs/ai/agent-profiles), [Tool Permissions](https://zed.dev/docs/ai/tool-permissions), [MCP](https://zed.dev/docs/ai/mcp) servers, [Terminal Threads](https://zed.dev/docs/ai/terminal-threads), [Tasks](https://zed.dev/docs/tasks), and [Parallel Agents](https://zed.dev/docs/ai/parallel-agents) worktrees.
+Zed 以编辑器为宿主，而不是独立的循环调度器，因此应将[选择工具](#choosing-a-tool)中的相同原语映射到 [Agent Panel](https://zed.dev/docs/ai/agent-panel) 线程、[Instructions](https://zed.dev/docs/ai/instructions)、[Skills](https://zed.dev/docs/ai/skills)、[Agent Profiles](https://zed.dev/docs/ai/agent-profiles)、[Tool Permissions](https://zed.dev/docs/ai/tool-permissions)、[MCP](https://zed.dev/docs/ai/mcp) 服务、[Terminal Threads](https://zed.dev/docs/ai/terminal-threads)、[Tasks](https://zed.dev/docs/tasks) 和 [Parallel Agents](https://zed.dev/docs/ai/parallel-agents) Git 工作树。
 
-| Primitive | Zed mapping |
+| 原语 | Zed 映射 |
 |-----------|-------------|
-| Scheduling | Zed does not currently expose a first-class cron-style loop scheduler. Use Agent Panel threads or Terminal Threads for manual/ad-hoc runs, Zed Tasks for editor-side command hooks, and cron, systemd, GitHub Actions, or another external scheduler for cadence. |
-| Project rules / skills path | Put always-on repo guidance in project instructions, preferably `AGENTS.md`; Zed also supports `.rules`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`, `AGENT.md`, `CLAUDE.md`, and `GEMINI.md`. Put reusable workflows in project-local Skills under `.agents/skills/<name>/SKILL.md`. |
-| State | Keep `STATE.md` at the repo root and make every loop prompt read and update the same file. Zed thread history helps local continuity, but committed markdown state is the portable memory spine across restarts, agents, and external schedulers. |
-| Worktrees | Use Parallel Agents with git worktree isolation when multiple threads may edit the same files; review the diff and merge through normal git flow. |
-| Maker/checker split | Run the maker in a Write profile thread, then run a second Ask/read-only or restricted custom profile thread over `git diff`, `STATE.md`, and the acceptance criteria. Use Tool Permissions to keep destructive tools denied or confirmation-gated for the checker. |
-| Connectors | Configure MCP servers in Zed Agent Settings for GitHub, docs lookup, issue/PR discovery, or other external context. External Agents and Terminal Threads may use their own native config, so do not assume Zed controls every connector. Keep credentials out of prompts and state files. |
+| 调度 | Zed 目前未提供一等的 cron 风格循环调度器。使用 Agent Panel 线程或 Terminal Threads 进行手动／临时运行，使用 Zed Tasks 设置编辑器端命令钩子，并通过 cron、systemd、GitHub Actions 或其他外部调度器设置运行节奏。 |
+| 项目规则／技能路径 | 将始终生效的仓库指导放入项目指令，最好使用 `AGENTS.md`；Zed 还支持 `.rules`、`.cursorrules`、`.windsurfrules`、`.clinerules`、`.github/copilot-instructions.md`、`AGENT.md`、`CLAUDE.md` 和 `GEMINI.md`。将可复用工作流放在 `.agents/skills/<name>/SKILL.md` 下的项目本地 Skills 中。 |
+| 状态 | 将 `STATE.md` 保存在仓库根目录，并让每个循环提示词读取和更新同一个文件。Zed 线程历史有助于保持本地连续性，但已提交的 Markdown 状态才是跨重启、智能体和外部调度器的可移植记忆主干。 |
+| Git 工作树 | 当多个线程可能编辑同一文件时，使用带 Git 工作树隔离的 Parallel Agents；通过常规 Git 流程审查差异并合并。 |
+| 执行者／检查者分工 | 在 Write 配置文件线程中运行执行者，然后针对 `git diff`、`STATE.md` 和验收标准运行第二个 Ask／只读或受限自定义配置文件线程。使用 Tool Permissions 拒绝检查者使用破坏性工具，或要求确认后才能使用。 |
+| 连接器 | 在 Zed Agent Settings 中配置 MCP 服务，用于 GitHub、文档查询、issue/PR 发现或其他外部上下文。External Agents 和 Terminal Threads 可能使用自身的原生配置，因此不要假定 Zed 能控制每个连接器。不要将凭据写入提示词和状态文件。 |
 
-Minimal transfer recipe:
+最小迁移方案：
 
 ```bash
 mkdir -p .agents/skills/loop-triage .agents/skills/loop-verifier
@@ -211,7 +226,9 @@ cp templates/SKILL.md.verifier .agents/skills/loop-verifier/SKILL.md
 cp starters/minimal-loop/STATE.md.example STATE.md
 ```
 
-Week-one Daily Triage prompt (report-only, state updates only):
+第一周的每日问题分诊提示词（仅报告，只更新状态）：
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```text
 Run loop-triage for this repository.
@@ -222,7 +239,9 @@ Do not edit source code in week one.
 Use MCP tools only when needed for issue/PR discovery.
 ```
 
-Verifier pass for later L2 work:
+后续 L2 工作的验证步骤：
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```text
 Act as loop-verifier.
@@ -232,51 +251,53 @@ Use an Ask/read-only or confirmation-gated profile.
 Report PASS/FAIL and do not edit files.
 ```
 
-After copying: map scheduling to manual Agent Panel threads, Terminal Threads, Zed Tasks, or an external scheduler until Zed has a richer first-class loop scheduler. Use `AGENTS.md` for always-on repo rules, `.agents/skills/<name>/SKILL.md` for reusable workflows, Agent Profiles / Tool Permissions for maker-checker separation, and MCP for external tools.
+复制后：在 Zed 提供更完善的一等循环调度器之前，将调度映射到手动 Agent Panel 线程、Terminal Threads、Zed Tasks 或外部调度器。使用 `AGENTS.md` 保存始终生效的仓库规则，使用 `.agents/skills/<name>/SKILL.md` 保存可复用工作流，使用 Agent Profiles / Tool Permissions 实现执行者／检查者分工，并使用 MCP 连接外部工具。
 
-## Appendix: Gemini CLI
+<a id="appendix-gemini-cli"></a>
+## 附录：Gemini CLI
 
-Gemini CLI is a terminal-based agent tool. Map the same loop primitives onto the `gemini` command, external schedulers, context files, and separate verification sessions.
+Gemini CLI 是基于终端的智能体工具。将相同的循环原语映射到 `gemini` 命令、外部调度器、上下文文件和独立验证会话。
 
-| Primitive | Gemini CLI mapping |
+| 原语 | Gemini CLI 映射 |
 |-----------|--------------------|
-| Scheduling | Use external schedulers such as cron, systemd timers, or GitHub Actions to invoke Gemini CLI workflows on a cadence. |
-| Skills / Context Files | Use project context files such as `GEMINI.md` and repository documentation to provide instructions, conventions, and background information. |
-| State | Keep persistent loop state in files such as `STATE.md.example`. Each run should read existing state, update only relevant sections, and preserve history. |
-| Maker/checker split | Use separate Gemini CLI sessions: one session creates changes, another reviews output, validates requirements, and checks the diff. |
-| Connectors | Use available MCP servers or external tools to provide additional context and capabilities. |
+| 调度 | 使用 cron、systemd timer 或 GitHub Actions 等外部调度器，按运行节奏调用 Gemini CLI 工作流。 |
+| 技能／上下文文件 | 使用 `GEMINI.md` 等项目上下文文件和仓库文档提供指令、约定和背景信息。 |
+| 状态 | 将持久循环状态保存在 `STATE.md.example` 等文件中。每次运行都应读取已有状态，只更新相关部分，并保留历史记录。 |
+| 执行者／检查者分工 | 使用独立的 Gemini CLI 会话：一个会话创建变更，另一个会话审查输出、验证要求并检查差异。 |
+| 连接器 | 使用可用的 MCP 服务或外部工具提供更多上下文和能力。 |
 
-### Week-one Daily Triage Example
+<a id="week-one-daily-triage-example"></a>
+### 第一周每日问题分诊示例
 
-A Gemini CLI daily triage loop:
+Gemini CLI 每日问题分诊循环：
 
-1. Start Gemini CLI from the repository root.
-2. Read `STATE.md.example`.
-3. Review pending triage items.
-4. Update only triage sections.
-5. Do not edit source files during the first week.
-6. Save updated state for the next run.
+1. 从仓库根目录启动 Gemini CLI。
+2. 读取 `STATE.md.example`。
+3. 审查待处理的问题分诊项。
+4. 只更新问题分诊部分。
+5. 第一周不要编辑源文件。
+6. 保存更新后的状态，供下次运行使用。
 
-### Official Documentation
+<a id="official-documentation"></a>
+### 官方文档
 
 https://github.com/google-gemini/gemini-cli
 
-## Appendix: Amazon Q Developer CLI
+<a id="appendix-amazon-q-developer-cli"></a>
+## 附录：Amazon Q Developer CLI
 
-Amazon Q Developer CLI (`q chat`) is a terminal-based agent, AWS-native, with custom agent
-profiles and MCP support. Map the same loop primitives onto `q chat`, custom agent configs,
-context resources, and external schedulers.
+Amazon Q Developer CLI（`q chat`）是 AWS 原生、基于终端的智能体，支持自定义智能体配置文件和 MCP。将相同的循环原语映射到 `q chat`、自定义智能体配置、上下文资源和外部调度器。
 
-| Primitive | Amazon Q Developer CLI mapping |
+| 原语 | Amazon Q Developer CLI 映射 |
 |-----------|--------------------------------|
-| Scheduling | No native cron-style scheduler. Use external schedulers (cron, systemd timers, GitHub Actions) to invoke `q chat` non-interactively, or `q chat --resume` to continue a saved per-directory conversation on the next scheduled run. |
-| Rules / Context files | Define a custom agent in `.amazonq/agents/<name>.json` (project) or `~/.aws/amazonq/cli-agents/<name>.json` (personal), and list always-on context in its `resources` field (e.g. `file://STATE.md`, `file://.amazonq/rules/**/*.md`). Use `hooks.agentSpawn` to inject fresh context (like `git status`) at session start. |
-| State | Keep `STATE.md` at the repo root, referenced in the custom agent's `resources` field so it's loaded every session; each run should read then update only the relevant section. |
-| Maker/checker split | No native subagent/reviewer primitive. Workaround: define two custom agents (e.g. `daily-triage.json` with write tools, `loop-verifier.json` restricted to `fs_read`/`@git` only) and run the verifier agent over the diff in a separate `q chat --agent loop-verifier` session. |
-| Connectors | Configure MCP servers in `.amazonq/mcp.json` (project) or `~/.aws/amazonq/mcp.json` (global); scope tool trust per agent via `allowedTools`. Treat workspace `.amazonq/mcp.json` files from untrusted repos with caution — review before opening, since auto-loaded MCP configs have been a real attack vector for this class of tool. |
-| Honest gaps | No first-class scheduler, no built-in maker/checker separation, no dedicated state-file convention — these are all manual conventions layered on top of `q chat`, same as most terminal agents without a purpose-built loop scheduler. |
+| 调度 | 没有原生的 cron 风格调度器。使用外部调度器（cron、systemd timer、GitHub Actions）以非交互方式调用 `q chat`，或使用 `q chat --resume` 在下一次计划运行时继续每个目录中已保存的对话。 |
+| 规则／上下文文件 | 在 `.amazonq/agents/<name>.json`（项目）或 `~/.aws/amazonq/cli-agents/<name>.json`（个人）中定义自定义智能体，并在其 `resources` 字段中列出始终生效的上下文（例如 `file://STATE.md`、`file://.amazonq/rules/**/*.md`）。使用 `hooks.agentSpawn` 在会话启动时注入最新上下文（例如 `git status`）。 |
+| 状态 | 将 `STATE.md` 保存在仓库根目录，并在自定义智能体的 `resources` 字段中引用，以便每个会话都加载该文件；每次运行都应先读取，然后只更新相关部分。 |
+| 执行者／检查者分工 | 没有原生的子智能体／审查者原语。变通方案：定义两个自定义智能体（例如，带写入工具的 `daily-triage.json`，以及仅限使用 `fs_read`/`@git` 的 `loop-verifier.json`），并在独立的 `q chat --agent loop-verifier` 会话中运行验证智能体来审查差异。 |
+| 连接器 | 在 `.amazonq/mcp.json`（项目）或 `~/.aws/amazonq/mcp.json`（全局）中配置 MCP 服务；通过 `allowedTools` 为每个智能体限定工具信任范围。请谨慎对待不受信任仓库中的工作区 `.amazonq/mcp.json` 文件——打开前先审查，因为自动加载的 MCP 配置确实曾成为这类工具的攻击途径。 |
+| 客观不足 | 没有一等调度器，没有内置的执行者／检查者分工，也没有专用的状态文件约定——与大多数不含专用循环调度器的终端智能体相同，这些都是叠加在 `q chat` 之上的手动约定。 |
 
-Minimal transfer recipe:
+最小迁移方案：
 
 ```bash
 mkdir -p .amazonq/agents .amazonq/rules
@@ -285,6 +306,8 @@ cp starters/minimal-loop/STATE.md.example STATE.md
 ```
 
 `.amazonq/agents/daily-triage.json`:
+
+> 中文说明：以下配置包含供智能体执行的原始英文指令及机器可读字段，为避免语义漂移保持不变
 
 ```json
 {
@@ -299,14 +322,19 @@ cp starters/minimal-loop/STATE.md.example STATE.md
 }
 ```
 
-### Week-one Daily Triage prompt (report-only, copy-paste)
+<a id="week-one-daily-triage-prompt-report-only-copy-paste"></a>
+### 第一周每日问题分诊提示词（仅报告，可复制粘贴）
+
+> 中文说明：以下命令包含供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```bash
 q chat --agent daily-triage --no-interactive \
   "Run loop-triage. Read STATE.md first. Update only High Priority and Watch List sections. Do not edit source code in week one."
 ```
 
-Verifier pass for later L2 work — a separate, read-only-scoped agent:
+后续 L2 工作的验证步骤——使用独立的只读作用域智能体：
+
+> 中文说明：以下命令包含供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```bash
 git diff > diff.patch
@@ -314,10 +342,9 @@ q chat --agent loop-verifier --no-interactive \
   "Act as loop-verifier. Review diff.patch against STATE.md goals. Report PASS/FAIL and do not edit files."
 ```
 
-After copying: map scheduling to cron/systemd/GitHub Actions until Q has a first-class
-loop scheduler. Use `.amazonq/rules/` for always-on repo guidance, separate custom agents
-for maker/checker separation, and `.amazonq/mcp.json` for external tools.
+复制后：在 Q 提供一等循环调度器之前，将调度映射到 cron/systemd/GitHub Actions。使用 `.amazonq/rules/` 保存始终生效的仓库指导，使用独立的自定义智能体实现执行者／检查者分工，并通过 `.amazonq/mcp.json` 连接外部工具。
 
-### Official Documentation
+<a id="official-documentation-1"></a>
+### 官方文档
 
 https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line.html

@@ -1,83 +1,113 @@
-# Anti-Patterns
+<a id="anti-patterns"></a>
 
-Design mistakes to avoid **before** enabling unattended loops. For runtime incidents, see [failure-modes.md](./failure-modes.md).
+# 反模式
 
-## 1. Same agent implements and verifies
+启用无人值守循环**之前**应避免的设计错误。有关运行时事故，请参阅 [failure-modes.md](./failure-modes.md)。
 
-**Anti-pattern**: One session marks its own work "done" after running tests once.
+<a id="1-same-agent-implements-and-verifies"></a>
 
-**Why it fails**: Confirmation bias; weak tests get rubber-stamped.
+## 1. 由同一智能体实现并验证
 
-**Do instead**: Separate verifier sub-agent, model, or `/goal` checker. Verifier default stance: REJECT.
+**反模式**：同一个会话运行一次测试后，就把自己的工作标记为“完成”。
 
-## 2. No attempt cap
+**失效原因**：存在确认偏误；薄弱的测试会被轻易放行。
 
-**Anti-pattern**: "Keep trying until CI is green."
+**应对方式**：使用独立的验证子智能体、不同模型或 `/goal` 检查器。验证方的默认立场应为 `REJECT`。
 
-**Why it fails**: Infinite fix loops, token burn, merge of wrong fixes.
+<a id="2-no-attempt-cap"></a>
 
-**Do instead**: Hard cap (e.g. 3 attempts) → escalate with full context in state file.
+## 2. 没有尝试次数上限
 
-## 3. Vague triage output
+**反模式**：
 
-**Anti-pattern**: Triage skill returns paragraphs of narrative.
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
+>
+> "Keep trying until CI is green."
 
-**Why it fails**: Loop cannot parse priorities; humans ignore STATE.md.
+**失效原因**：造成无限修复循环、token 用量激增，还可能合并错误的修复。
 
-**Do instead**: Structured markdown sections with one-line items and explicit `Suggested loop action`.
+**应对方式**：设置硬性上限（例如尝试 3 次）→ 将完整上下文写入状态文件并升级处理。
 
-## 4. L3 before L1 quality
+<a id="3-vague-triage-output"></a>
 
-**Anti-pattern**: Auto-fix and auto-PR on day one.
+## 3. 问题分诊输出含糊不清
 
-**Why it fails**: Loop acts on bad signal; comprehension debt explodes.
+**反模式**：问题分诊技能返回大段叙述性文字。
 
-**Do instead**: L1 report-only week one. Measure triage accuracy before enabling L2.
+**失效原因**：循环无法解析优先级；人们会忽略 `STATE.md`。
 
-## 5. Shared state without schema
+**应对方式**：使用结构化 Markdown 章节，每个条目保持单行，并明确给出 `Suggested loop action`。
 
-**Anti-pattern**: Three loops append to one unstructured STATE.md.
+<a id="4-l3-before-l1-quality"></a>
 
-**Why it fails**: State rot, conflicting actions, ghost items.
+## 4. 在 L1 质量达标前启用 L3
 
-**Do instead**: One state file per pattern, or clearly separated sections with prune rules.
+**反模式**：第一天就启用自动修复和自动创建 PR。
 
-## 6. MCP with write-everything scope
+**失效原因**：循环会根据错误信号采取行动；理解债务会迅速膨胀。
 
-**Anti-pattern**: Loop can merge PRs, post to Slack, and edit production tickets on day one.
+**应对方式**：第一周采用 L1 仅报告模式。在启用 L2 之前，先衡量问题分诊的准确性。
 
-**Why it fails**: Blast radius of a bad triage decision is huge.
+<a id="5-shared-state-without-schema"></a>
 
-**Do instead**: L1 read-only connectors. Expand scope only after trust is earned.
+## 5. 共享状态却没有结构规范
 
-## 7. No kill switch
+**反模式**：三个循环都向同一个无结构的 `STATE.md` 追加内容。
 
-**Anti-pattern**: Loop runs 24/7 with no pause criteria.
+**失效原因**：造成状态腐化、行动冲突和幽灵条目。
 
-**Why it fails**: Alert fatigue, budget overrun, weekend incidents.
+**应对方式**：每种模式使用一个状态文件，或者划分清晰的独立章节并设置清理规则。
 
-**Do instead**: Document pause/kill in LOOP.md + `templates/loop-budget.md.template`.
+<a id="6-mcp-with-write-everything-scope"></a>
 
-## 8. Fixing flakes with code
+## 6. MCP 拥有无限制写入权限
 
-**Anti-pattern**: CI Sweeper changes application code when classification is `flake`.
+**反模式**：循环从第一天起就能合并 PR、向 Slack 发消息以及编辑生产环境工单。
 
-**Why it fails**: Masks infra problems; introduces random diffs.
+**失效原因**：一次错误的问题分诊决策就可能造成巨大的影响范围。
 
-**Do instead**: Classify → quarantine or retry policy → escalate env/infra failures.
+**应对方式**：L1 只使用只读连接器。只有在建立信任后才能扩大权限范围。
 
-## 9. Auto-merge without allowlist
+<a id="7-no-kill-switch"></a>
 
-**Anti-pattern**: "Verifier passed, merge it."
+## 7. 没有紧急停止开关
 
-**Why it fails**: Security and business-logic bugs pass weak verifiers.
+**反模式**：循环全天候运行，却没有暂停标准。
 
-**Do instead**: Explicit path allowlist; human merge for denylist paths per [safety.md](./safety.md).
+**失效原因**：造成告警疲劳、预算超支和周末事故。
 
-## 10. No run log
+**应对方式**：在 `LOOP.md` 和 `templates/loop-budget.md.template` 中记录暂停与停止机制。
 
-**Anti-pattern**: Only STATE.md, no history of what the loop did.
+<a id="8-fixing-flakes-with-code"></a>
 
-**Why it fails**: Cannot debug "why did it do that Tuesday?"
+## 8. 用代码修复间歇性故障
 
-**Do instead**: Append to `loop-run-log.md` per [operating-loops.md](./operating-loops.md).
+**反模式**：当分类结果为 `flake` 时，CI Sweeper 修改应用程序代码。
+
+**失效原因**：掩盖基础设施问题；引入随机差异。
+
+**应对方式**：分类 → 隔离或应用重试策略 → 升级处理环境／基础设施故障。
+
+<a id="9-auto-merge-without-allowlist"></a>
+
+## 9. 没有路径许可清单却自动合并
+
+**反模式**：
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
+>
+> "Verifier passed, merge it."
+
+**失效原因**：薄弱的验证机制可能放过安全漏洞和业务逻辑错误。
+
+**应对方式**：设置明确的路径许可清单；按照 [safety.md](./safety.md) 的规定，由人工合并路径拒绝清单中的变更。
+
+<a id="10-no-run-log"></a>
+
+## 10. 没有运行日志
+
+**反模式**：只有 `STATE.md`，没有循环操作的历史记录。
+
+**失效原因**：无法调试“为什么它星期二会那样做？”
+
+**应对方式**：按照 [operating-loops.md](./operating-loops.md) 的说明，将记录追加到 `loop-run-log.md`。

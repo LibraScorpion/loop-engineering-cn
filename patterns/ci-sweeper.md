@@ -1,26 +1,28 @@
-# CI Sweeper Loop
+# CI 清扫循环（CI Sweeper Loop）
 
-**Goal**: React quickly to failing CI on main or active branches — diagnose, propose minimal fixes, and escalate when the loop cannot confidently resolve.
+**目标**：快速响应 main 或活跃分支上失败的 CI——诊断问题、提出最小修复方案，并在循环无法确信可以解决时升级处理。
 
-## Scheduling
+## Scheduling（调度）
 
-**Recommended**:
-- `/loop 15m` during active development (Grok, Claude Code)
-- `/loop 5m` when main is red and you're shipping
-- GitHub Action on `workflow_run` failure (event-driven, not polling)
+**推荐配置**：
+- 活跃开发期间每 `/loop 15m` 运行一次（Grok、Claude Code）
+- main 失败且正在发布时每 `/loop 5m` 运行一次
+- 在 `workflow_run` 失败时触发 GitHub Action（事件驱动，而非轮询）
 
-Slower overnight cadence (30–60m) is fine when no one is watching.
+无人关注时，夜间采用较慢的运行节奏（30–60m）即可。
 
-## Required Skills
+## Required Skills（必需技能）
 
-- `ci-triage` — Parse CI logs, identify failing job/step, classify failure type (flake, regression, env, config)
-- `minimal-fix` — Smallest change that addresses the specific failure
-- `loop-guard` — Circuit breaker: log each attempt to `loop-ledger.json` and run `loop-context --check` before retrying; escalate instead of looping on the same failure
-- Project test/lint skill — Build and test commands for your stack
+- `ci-triage` — 解析 CI 日志，识别失败的 job/step，并将失败类型归类为 `flake`、`regression`、`env` 或 `config`
+- `minimal-fix` — 针对特定失败实施最小改动
+- `loop-guard` — 熔断器：将每次尝试记录到 `loop-ledger.json`，并在重试前运行 `loop-context --check`；对同一失败升级处理，而不是持续循环
+- 项目的 test/lint 技能——适用于当前技术栈的构建和测试命令
 
-## State
+## 状态
 
-`ci-sweeper-state.md` or section in `STATE.md`:
+使用 `ci-sweeper-state.md`，或使用 `STATE.md` 中的相应章节：
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```markdown
 ## CI Sweeper — Active Failures
@@ -38,82 +40,91 @@ Last run: 2026-06-09 14:30 UTC
 - main @ def5678 — lint fix merged via PR #1250
 ```
 
-Track: commit SHA, failing job, attempt count, worktree/PR link, outcome.
+跟踪以下内容：commit SHA、失败的 job、尝试次数、worktree/PR 链接和结果。
 
-## How the Loop Runs (Typical Cycle)
+## 循环如何运行（典型周期）
 
-1. Discover CI failures on watched branches (main, release/*, active PRs).
-2. For each new failure:
-   - Classify: flake vs real regression vs infra.
-   - If flake (seen before, intermittent): add to Watch, do not auto-fix.
-   - If actionable: open worktree → implementer drafts fix.
-3. Verifier sub-agent checks: fix addresses failure, no unrelated changes, tests pass locally.
-4. Open PR or comment on existing PR with proposed fix.
-5. Before each retry, `loop-guard` runs the circuit breaker (`loop-context --check`). If the same failure recurs N× or attempts exceed max (e.g. 3), it trips: escalate to human with a pruned context summary instead of looping.
-6. Prune resolved failures from active list.
+1. 发现受监控分支（main、release/*、活跃 PRs）上的 CI 失败。
+2. 针对每个新失败：
+   - 分类：`flake`、真实的 `regression` 或 `infra`。
+   - 如果是 `flake`（以前出现过、间歇发生）：加入 Watch，不要自动修复。
+   - 如果可以处理：打开 worktree → 由 implementer 起草修复方案。
+3. verifier 子智能体检查：修复是否针对该失败、是否没有无关改动，以及测试能否在本地通过。
+4. 打开 PR，或在现有 PR 上评论并附上建议的修复方案。
+5. 每次重试前，`loop-guard` 都会运行熔断器（`loop-context --check`）。如果同一失败重复 N× 次，或尝试次数超过上限（例如 3 次），熔断器将触发：向人工升级并提供精简后的上下文摘要，不再继续循环。
+6. 从活跃列表中移除已解决的失败。
 
-## Verification Strategy
+## 验证策略
 
-- Verifier must run tests in the worktree before approving.
-- Implementer cannot merge — only propose.
-- Flake detection: if same test failed and passed on retry without code change, do not auto-fix.
+- verifier 必须先在 worktree 中运行测试，才能批准。
+- implementer 不能合并——只能提出方案。
+- `flake` 检测：如果同一测试先失败，随后在没有代码改动的情况下重试通过，则不要自动修复。
 
-## Human Handoff Points
+## 人工交接点
 
-- Infrastructure failures (runner OOM, registry down, secrets missing)
-- Failures touching >5 files or core architecture
-- Security-sensitive test failures
-- Max attempts exceeded on same failure
-- Intermittent flakes that need quarantine, not code changes
+- 基础设施失败（runner OOM、registry down、secrets missing）
+- 涉及 >5 个文件或核心架构的失败
+- 安全敏感型测试失败
+- 对同一失败的尝试次数超过上限
+- 需要隔离而不是修改代码的间歇性 `flake`
 
-## Tool-Specific Notes
+## 特定工具说明
 
 **Grok Build TUI**:
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
+
 ```bash
 /loop 15m Check CI on main and open PRs. For new failures: classify, and if actionable draft minimal fix in worktree with verifier. Update ci-sweeper-state.md. Escalate after 3 attempts.
 ```
 
 **Claude Code**:
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
+
 ```bash
 /goal All tests on main pass and lint is clean
 ```
-Use `/goal` for focused "get green" sessions; use scheduled sweeper for ongoing monitoring.
+使用 `/goal` 开展聚焦于“恢复绿色状态”的会话；使用定时 sweeper 进行持续监控。
 
 **Codex**:
-- Automation: "Summarise CI failures every 30m" → Triage inbox; separate automation for fix attempts.
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
+
+- Automation: "Summarise CI failures every 30m" → 问题分诊收件箱；修复尝试使用单独的 automation。
 
 **GitHub Actions**:
-- See `examples/github-actions/ci-sweeper.yml` — triggers on workflow failure.
+- 参见 `examples/github-actions/ci-sweeper.yml`——在 workflow 失败时触发。
 
-## Failure Modes & Mitigations
+## 失效模式与缓解措施
 
-| Failure | Mitigation |
+| 失效模式 | 缓解措施 |
 |---------|------------|
-| Fix-the-symptom loops | Verifier checks root cause, not just green CI |
-| Fighting flakes with retries | Classify flakes; quarantine or skip with ticket |
-| Token burn on red main | Pause loop after N failures; batch fixes |
-| Wrong branch targeted | Explicit branch allowlist in skill |
+| 只修复表象的循环 | verifier 检查根本原因，而不只是 CI 是否恢复绿色状态 |
+| 通过重试对抗 `flake` | 对 `flake` 分类；隔离，或创建 ticket 后跳过 |
+| main 失败时消耗 token | N 次失败后暂停循环；批量修复 |
+| 选错目标分支 | 在技能中明确设置分支允许列表 |
 
-## Cost Profile
+## 成本概况
 
-| Scenario | Tokens/run | Notes |
+| 场景 | token/次 | 说明 |
 |----------|------------|-------|
-| No-op (CI green) | ~5k | **Required** — do not run full sweeper when green |
-| Triage / classify | ~50k | Log parse + failure classification |
-| Fix attempt (L2) | ~200k | Worktree + implementer + verifier |
+| 无操作（CI 绿色） | ~5k | **必需**——CI 绿色时不要运行完整 sweeper |
+| 问题分诊／分类 | ~50k | 日志解析 + 失败分类 |
+| 修复尝试（L2） | ~200k | Worktree + implementer + verifier |
 
-**Cadence**: 5m–15m · **Tier**: very-high · **Suggested daily cap**: 1M tokens · **Early exit required**
+**运行节奏**：5m–15m · **层级**：very-high · **建议每日上限**：1M tokens · **必须提前退出**
 
 ```bash
 npx @cobusgreyling/loop-cost --pattern ci-sweeper --cadence 15m --level L2
 ```
 
-At 15m cadence without early-exit, worst-case spend exceeds 5M tokens/day. Never run full action paths on every tick.
+以 15m 的节奏运行且不提前退出时，最坏情况下的用量会超过 5M tokens/day。切勿在每次 tick 时都运行完整操作路径。
 
-## Success Metrics
+## 成功指标
 
-- Mean time to first proposed fix after CI goes red
-- % of failures resolved without human intervention (trivial cases only)
-- Repeat failure rate (same job failing again within 48h)
+- CI 变红后到首次提出修复方案的平均时间
+- 无需人工干预即可解决的失败百分比（仅限简单情况）
+- 重复失败率（同一 job 在 48h 内再次失败）
 
-Best entry loop for teams new to loop engineering — high frequency, bounded scope, clear verification.
+这是初次采用循环工程的团队最合适的入门循环——频率高、范围有限、验证清晰。

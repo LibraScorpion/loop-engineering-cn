@@ -5,6 +5,7 @@
   "scripts": {
     "validate:registry": "node scripts/validate-registry.mjs",
     "check:loop-init": "node scripts/check-loop-init-sync.mjs",
+    "check:translation": "node scripts/check-translation-boundaries.mjs",
     "test:loop-audit": "cd tools/loop-audit && npm test",
     "test:loop-init": "cd tools/loop-init && npm test",
     "test:loop-cost": "cd tools/loop-cost && npm test",

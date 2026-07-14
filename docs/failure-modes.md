@@ -1,197 +1,233 @@
-# Failure Mode Catalog
+<a id="failure-mode-catalog"></a>
 
-Real ways loops fail — and how good design mitigates them. Use this when debugging a misbehaving loop or writing a new pattern.
+# 失效模式目录
 
-## Classification
+循环发生失效的真实方式，以及良好的设计如何缓解这些问题。在调试行为异常的循环或编写新模式时，可以参考本文。
 
-| Severity | Meaning |
-|----------|---------|
-| **S1 — Annoying** | Wasted time/tokens, no user harm |
-| **S2 — Harmful** | Wrong code merged, bad tickets, alert fatigue |
-| **S3 — Critical** | Security, data loss, production incident |
+<a id="classification"></a>
 
----
+## 分类
 
-## Infinite Fix Loop
-
-**Symptom**: Same PR or CI job gets automated fix attempts 5+ times; never converges.
-
-**Severity**: S2
-
-**Causes**:
-- Verifier too weak or same session as implementer
-- Root cause misdiagnosed (symptom fixing)
-- Flaky test treated as regression
-
-**Mitigations**:
-- Hard cap on attempts (e.g. 3) → escalate to human
-- Separate verifier model / higher reasoning effort
-- Classify flakes in triage; quarantine instead of code change
-- Record attempt count in state file
+| 严重程度 | 含义 |
+|----------|------|
+| **S1 — 烦人** | 浪费时间或 token，但不会伤害用户 |
+| **S2 — 有害** | 合并错误代码、创建不当工单或造成告警疲劳 |
+| **S3 — 严重** | 导致安全问题、数据丢失或生产事故 |
 
 ---
 
-## State Rot
+<a id="infinite-fix-loop"></a>
 
-**Symptom**: `STATE.md` references merged PRs, closed tickets, or stale branches.
+## 无限修复循环
 
-**Severity**: S1 → S2 (loop acts on ghosts)
+**症状**：同一个 PR 或 CI 作业被自动尝试修复 5 次以上，但始终无法收敛。
 
-**Causes**:
-- No prune step at end of run
-- State file not read at start
-- Multiple loops writing same file without schema
+**严重程度**：S2
 
-**Mitigations**:
-- Prune closed/merged items every run
-- `Last run` timestamp + validate IDs against live API
-- One state file per loop pattern, or clear sections
+**原因**：
+- 验证者能力太弱，或与执行者处于同一个会话
+- 误判根本原因（只修复了表面症状）
+- 将不稳定测试当作回归问题
 
----
-
-## Verifier Theater
-
-**Symptom**: Verifier "approves" but tests fail in CI or review finds obvious bugs.
-
-**Severity**: S2
-
-**Causes**:
-- Verifier prompt too vague ("looks good")
-- Verifier doesn't run tests
-- Same model, same context as implementer
-
-**Mitigations**:
-- Verifier must run test/lint commands and report output
-- Different instructions: "find reasons to reject"
-- Stronger model on verifier for unattended loops
+**缓解措施**：
+- 硬性限制尝试次数（例如 3 次），达到上限后升级给人工处理
+- 使用独立的验证模型，或提高推理强度
+- 在问题分诊时识别不稳定测试；将其隔离，而不是修改代码
+- 在状态文件中记录尝试次数
 
 ---
 
-## Notification Fatigue
+<a id="state-rot"></a>
 
-**Symptom**: Slack/email pings every 5 minutes; team mutes the bot.
+## 状态腐化
 
-**Severity**: S1 → S2 (real escalations missed)
+**症状**：`STATE.md` 引用了已合并的 PR、已关闭的工单或陈旧分支。
 
-**Causes**:
-- Notify on every run, not every *actionable* finding
-- Low bar for "high priority" in triage skill
+**严重程度**：S1 → S2（循环对并不存在的对象采取行动）
 
-**Mitigations**:
-- Notify only when human decision required
-- Digest mode for report-only loops
-- Tighten triage "High Priority" rules
+**原因**：
+- 运行结束时没有执行清理步骤
+- 运行开始时没有读取状态文件
+- 多个循环在没有结构规范的情况下写入同一文件
 
----
-
-## Token Burn
-
-**Symptom**: Bill spikes; loop runs full sub-agent chains on empty or noisy triage.
-
-**Severity**: S1
-
-**Causes**:
-- Sub-minute cadence with heavy sub-agents
-- No early exit when watchlist empty
-- Retrying entire pipeline on transient API errors
-
-**Mitigations**:
-- Cheaper triage-only pass first; spawn sub-agents only for actionable items
-- `scheduler_delete` when nothing to watch
-- Daily token budget → pause loop
-- See [operating-loops.md](./operating-loops.md)
+**缓解措施**：
+- 每次运行时清理已关闭或已合并的条目
+- 记录 `Last run` 时间戳，并通过实时 API 验证 ID
+- 每个循环模式使用一个状态文件，或划分清晰的区段
 
 ---
 
-## Over-Reach (Wrong Scope)
+<a id="verifier-theater"></a>
 
-**Symptom**: Loop refactors unrelated modules, "fixes" design issues, or touches denylisted paths.
+## 验证者作秀
 
-**Severity**: S2 → S3
+**症状**：验证者声称 "approves"，但测试在 CI 中失败，或代码审查发现明显缺陷。
 
-**Causes**:
-- minimal-fix skill too permissive
-- No path allowlist/denylist
-- Triage puts architectural work in "High Priority"
+**严重程度**：S2
 
-**Mitigations**:
-- [safety.md](./safety.md) denylist enforced in skills
-- "Smallest possible diff" + verifier checks touched files
-- Triage skill: signal only, no invention
+**原因**：
+- 验证者提示词过于含糊，例如：
 
----
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
+>
+> "looks good"
 
-## Comprehension Debt Spiral
+- 验证者没有运行测试
+- 验证者与执行者使用相同模型和相同上下文
 
-**Symptom**: Velocity up, but no one can explain recent changes; review becomes rubber-stamp.
+**缓解措施**：
+- 验证者必须运行测试和 lint 命令，并报告输出
 
-**Severity**: S2 (long-term)
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
+>
+> "find reasons to reject"
 
-**Causes**:
-- Human stops reading loop output
-- Auto-merge on growing allowlist
-- No weekly human synthesis of loop actions
-
-**Mitigations**:
-- Mandatory human review for non-trivial PRs
-- Weekly "loop digest" read by owner
-- Cap auto-merge to truly trivial paths
+- 使用上述不同的指令
+- 对于无人值守循环，为验证者使用更强的模型
 
 ---
 
-## Cognitive Surrender
+<a id="notification-fatigue"></a>
 
-**Symptom**: "The loop handles it" — no opinions on correctness or design.
+## 通知疲劳
 
-**Severity**: S2 (cultural)
+**症状**：Slack 或电子邮件每 5 分钟发出一次提醒；团队最终将机器人静音。
 
-**Causes**:
-- Loop success metric = volume, not quality
-- No human gates on medium-risk work
+**严重程度**：S1 → S2（真正的升级通知被忽略）
 
-**Mitigations**:
-- Explicit human gates in every pattern
-- Success metric: time saved *with* quality bar held
-- Osmani: "Build it like someone who intends to stay the engineer"
+**原因**：
+- 每次运行都发出通知，而不是仅在出现*可操作*的发现时通知
+- 问题分诊技能对 "High Priority" 的判定门槛太低
 
----
-
-## Parallel Collision
-
-**Symptom**: Two sub-agents edit same files; merge conflicts; corrupted state.
-
-**Severity**: S2
-
-**Causes**:
-- No worktree isolation
-- Two loops acting on same PR without coordination
-
-**Mitigations**:
-- `isolation: worktree` for all code-editing sub-agents
-- Lock or queue in state: "PR #1234 — worktree in progress"
+**缓解措施**：
+- 仅在需要人工决策时发出通知
+- 仅报告循环使用摘要模式
+- 收紧问题分诊中的 "High Priority" 规则
 
 ---
 
-## Escalation Failure
+<a id="token-burn"></a>
 
-**Symptom**: Loop stuck retrying; human never notified.
+## token 消耗
 
-**Severity**: S2
+**症状**：账单激增；循环针对空的问题分诊结果或充满噪声的结果，运行完整的子智能体链。
 
-**Causes**:
-- Max attempts not implemented
-- Escalation only writes to state no one reads
+**严重程度**：S1
 
-**Mitigations**:
-- Connector ping on escalation (Slack, Linear comment)
-- `High Priority (waiting on human)` section in STATE.md
-- Alert if item in that section >24h
+**原因**：
+- 以不足一分钟的运行节奏调用重型子智能体
+- 监视列表为空时没有提前退出
+- 遇到瞬时 API 错误时重试整个流水线
+
+**缓解措施**：
+- 先执行成本较低的仅问题分诊步骤；只有存在可操作条目时才启动子智能体
+- 没有监视对象时执行 `scheduler_delete`
+- 设置每日 token 预算，达到预算后暂停循环
+- 参阅[循环运行指南](./operating-loops.md)
 
 ---
 
-## Contributing Failures
+<a id="over-reach-wrong-scope"></a>
 
-Have a story? Add a row via PR to this doc or open an issue with:
-- Pattern name
-- Symptom
-- What mitigated it (or didn't)
+## 越界（范围错误）
+
+**症状**：循环重构无关模块、“修复”设计问题或改动拒绝列表中的路径。
+
+**严重程度**：S2 → S3
+
+**原因**：
+- minimal-fix 技能过于宽松
+- 没有路径允许列表或拒绝列表
+- 问题分诊将架构工作列入 "High Priority"
+
+**缓解措施**：
+- 在技能中强制执行[安全指南](./safety.md)的拒绝列表
+- 遵循“尽可能小的差异”，并由验证者检查被改动的文件
+- 问题分诊技能只报告信号，不凭空创造事项
+
+---
+
+<a id="comprehension-debt-spiral"></a>
+
+## 理解债务螺旋
+
+**症状**：交付速度提高了，但没人能解释近期变更；代码审查沦为走过场。
+
+**严重程度**：S2（长期）
+
+**原因**：
+- 人工不再阅读循环输出
+- 在不断扩大的允许列表上启用自动合并
+- 没有每周对循环操作进行人工总结
+
+**缓解措施**：
+- 非简单 PR 必须经过人工审查
+- 由负责人每周阅读一次“循环摘要”
+- 将自动合并严格限制在真正简单的路径内
+
+---
+
+<a id="cognitive-surrender"></a>
+
+## 认知让渡
+
+**症状**：“循环会处理”——不再对正确性或设计形成判断。
+
+**严重程度**：S2（文化层面）
+
+**原因**：
+- 循环的成功指标是数量，而不是质量
+- 中等风险工作没有设置人工审核关卡
+
+**缓解措施**：
+- 在每个模式中明确设置人工审核关卡
+- 成功指标：在守住质量标准的前提下节省的时间
+- Osmani：“要像准备长期担任工程师的人那样构建它”
+
+---
+
+<a id="parallel-collision"></a>
+
+## 并行冲突
+
+**症状**：两个子智能体编辑相同文件，造成合并冲突和状态损坏。
+
+**严重程度**：S2
+
+**原因**：
+- 没有使用 Git 工作树隔离
+- 两个循环在没有协调的情况下处理同一个 PR
+
+**缓解措施**：
+- 所有编辑代码的子智能体均使用 `isolation: worktree`
+- 在状态中锁定或排队："PR #1234 — worktree in progress"
+
+---
+
+<a id="escalation-failure"></a>
+
+## 升级失败
+
+**症状**：循环陷入重试，人工却始终没有收到通知。
+
+**严重程度**：S2
+
+**原因**：
+- 没有实现最大尝试次数限制
+- 升级操作只写入无人读取的状态
+
+**缓解措施**：
+- 升级时通过连接器发送提醒（Slack、Linear 评论）
+- 在 `STATE.md` 中使用 `High Priority (waiting on human)` 区段
+- 如果条目停留在该区段超过 24 小时，则发出告警
+
+---
+
+<a id="contributing-failures"></a>
+
+## 提交失效案例
+
+有案例要分享吗？请通过 PR 向本文档添加一行，或提交 issue，并包含以下内容：
+- 模式名称
+- 症状
+- 哪些措施缓解了问题（或没有缓解）

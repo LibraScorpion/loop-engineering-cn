@@ -1,97 +1,97 @@
-# The Five Primitives + Memory
+# 五大原语 + 记忆
 
-This document expands on the core building blocks of loop engineering.
+本文详细介绍循环工程的核心构件。
 
-## 1. Automations / Scheduling
+## 1. 自动化／调度
 
-The heartbeat. Without scheduling, you just have a one-off agent run.
+这是循环的心跳。没有调度，就只有一次性的智能体运行。
 
-**Common realizations**:
-- `/loop` (Grok)
-- Scheduled tasks / cron in Claude Code
+**常见实现方式**：
+- `/loop`（Grok）
+- Claude Code 中的定时任务／cron
 - GitHub Actions + repository dispatch
-- `/goal` (run until a verifiable condition is true)
-- Custom harness schedulers
+- `/goal`（持续运行，直到某个可验证的条件为真）
+- 自定义智能体运行框架调度器
 
-Key properties: interval, fire-immediately, recurring vs one-shot, durable (survives restarts).
+关键属性：时间间隔、立即触发、重复运行或单次运行、持久性（重启后仍然有效）。
 
-## 2. Worktrees
+## 2. Git 工作树
 
-Parallelism without chaos.
+并行而不混乱。
 
-When two agents edit the same files at the same time you get merge hell. Git worktrees (or equivalent isolated checkouts) give each agent its own working directory that shares history but not the working tree.
+当两个智能体同时编辑相同文件时，就会陷入合并地狱。Git 工作树（或等效的隔离检出）让每个智能体拥有自己的工作目录；这些目录共享历史，但不共享工作树。
 
-In Grok: pass `isolation: "worktree"` when spawning subagents, or use `--worktree` / dedicated sessions.
+在 Grok 中：生成子智能体时传入 `isolation: "worktree"`，或使用 `--worktree`／专用会话。
 
-Cleanup is important — loops should delete the worktree when the task is done or handed off. The [loop-worktree](../tools/loop-worktree/) CLI makes this mechanical: one worktree per attempt, tracked in a manifest, swept on reject or escalation.
+清理非常重要——任务完成或移交后，循环应删除相应的 Git 工作树。[loop-worktree](../tools/loop-worktree/) CLI 将这一过程机制化：每次尝试使用一个工作树，在清单中跟踪，并在拒绝或升级时清理。
 
-## 3. Skills
+## 3. 技能
 
-The persistent memory of *intent*.
+关于*意图*的持久记忆。
 
-A skill (usually a `SKILL.md` + optional scripts/references) encodes:
-- Project conventions
-- "We don't do it this way because of X incident"
-- Build/test/lint commands
-- Review standards
-- Domain knowledge
+一项技能（通常由 `SKILL.md` 加可选的脚本／参考资料组成）会编码：
+- 项目约定
+- “我们不采用这种方式，因为曾发生过 X 事故”
+- 构建／测试／lint 命令
+- 审查标准
+- 领域知识
 
-Without skills the loop re-derives everything from scratch on every run (intent debt).
+没有技能，循环每次运行时都要从头重新推导一切（意图债务）。
 
-Skills are also the unit of reuse. Package them as plugins to share across repos or teams.
+技能也是复用单元。将它们打包为插件，即可在仓库或团队之间共享。
 
-## 4. Plugins & Connectors (MCP)
+## 4. 插件和连接器（MCP）
 
-A loop that can only read the filesystem is limited.
+只能读取文件系统的循环能力有限。
 
-Connectors let the loop:
-- Read and update Linear / Jira tickets
-- Post to Slack / Discord
-- Query databases or internal APIs
-- Create branches and PRs on GitHub
-- Trigger deploys or runbooks
+连接器让循环能够：
+- 读取和更新 Linear／Jira 工单
+- 向 Slack／Discord 发布消息
+- 查询数据库或内部 API
+- 在 GitHub 上创建分支和 PR
+- 触发部署或运维手册
 
-MCP (Model Context Protocol) has become the common substrate, so connectors written for one tool often work in another.
+MCP（Model Context Protocol）已成为通用底层协议，因此为一种工具编写的连接器通常也能在另一种工具中工作。
 
-## 5. Sub-agents (Maker / Checker Split)
+## 5. 子智能体：执行者／检查者（Maker / Checker）分工
 
-The single most important structural pattern for reliable loops.
+这是构建可靠循环最重要的结构模式。
 
-The agent that wrote the code is a terrible judge of its own work. A second agent (sometimes on a stronger model, always with different instructions) performs verification.
+编写代码的智能体并不适合评判自己的工作。第二个智能体（有时使用能力更强的模型，并且始终采用不同的指令）负责验证。
 
-Common splits:
-- Explorer → Implementer → Verifier
-- Implementer → Security reviewer
-- Implementer → Test writer + runner
+常见分工：
+- 探索者 → 实现者 → 验证者
+- 实现者 → 安全审查者
+- 实现者 → 测试编写者 + 执行者
 
-In unattended loops, the verifier is what lets you (the human) walk away with some confidence.
+在无人值守循环中，正是验证者让你（人类）能够放心离开。
 
-`/goal` in several tools uses a fresh model to decide whether the stopping condition has been met — another application of the maker/checker idea.
+多种工具中的 `/goal` 会使用一个全新模型判断是否已满足停止条件——这是执行者／检查者思路的另一种应用。
 
-## + Memory / State
+## + 记忆／状态
 
-The model has no long-term memory across separate turns or sessions.
+模型无法在彼此独立的轮次或会话之间保留长期记忆。
 
-The loop must read from and write to something durable:
-- A `STATE.md` or `LOOP-STATE.json` in the repo
-- A dedicated section of a Linear board or GitHub Project
-- A small database row
+循环必须读写某种持久载体：
+- 仓库中的 `STATE.md` 或 `LOOP-STATE.json`
+- Linear 看板或 GitHub Project 中的专用区域
+- 一条小型数据库记录
 
-Good state answers:
-- What are we currently working on?
-- What did we try last time and what was the outcome?
-- What is waiting for a human?
+良好的状态记录能够回答：
+- 我们目前在处理什么？
+- 上次尝试了什么，结果如何？
+- 什么事项正在等待人工处理？
 
-The state file is often the single most important artifact the loop produces.
+状态文件往往是循环产出的最重要单项制品。
 
-## How the Pieces Fit Together
+## 各部分如何协同工作
 
-A minimal viable loop usually starts with:
-Scheduling + one skill (triage) + state file.
+最小可行循环通常从以下组合开始：
+调度 + 一项技能（问题分诊）+ 状态文件。
 
-You then add:
-- Worktree isolation when you start making changes
-- Sub-agent verification when the loop is acting autonomously
-- Connectors when you want it to drive tickets and PRs instead of just suggesting
+随后再加入：
+- 开始实施修改时加入 Git 工作树隔离
+- 循环自主行动时加入子智能体验证
+- 希望循环直接推动工单和 PR，而不只是提出建议时加入连接器
 
-The best loops are the ones where each new primitive is added only when the previous version has proven its value (and its failure modes).
+最好的循环只在上一版本已经证明自身价值（以及暴露其失效模式）后，才加入新的原语。

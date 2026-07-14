@@ -1,8 +1,10 @@
 # goal-audit
 
-Goal Readiness Score CLI for Grok Build `/goal` workflows.
+用于 Grok Build `/goal` 工作流的目标就绪度评分 CLI。
 
-## Install / run
+<a id="install--run"></a>
+
+## 安装／运行
 
 ```bash
 npx @cobusgreyling/goal-audit .
@@ -10,16 +12,20 @@ npx @cobusgreyling/goal-audit . --suggest
 npx @cobusgreyling/goal-audit . --json
 ```
 
-## Levels
+<a id="levels"></a>
 
-| Level | Score | Meaning |
+## 等级
+
+| 等级 | 分数 | 含义 |
 |-------|-------|---------|
-| G0 | < 40 | Ad hoc `/goal` usage |
-| G1 | 40–59 | GOAL.md + assisted goals |
-| G2 | 60–79 | Verifier + test gates |
-| G3 | 80+ | CI, budget, run log |
+| G0 | < 40 | 临时使用 `/goal` |
+| G1 | 40–59 | `GOAL.md` + 辅助目标 |
+| G2 | 60–79 | 验证器 + 测试关卡 |
+| G3 | 80+ | CI、预算和运行日志 |
 
-## Development
+<a id="development"></a>
+
+## 开发
 
 ```bash
 npm install

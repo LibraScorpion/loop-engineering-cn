@@ -1,31 +1,31 @@
 blank_issues_enabled: false
 contact_links:
-  - name: "\u2753 Question or Discussion"
+  - name: "\u2753 提问或讨论"
     url: https://github.com/cobusgreyling/loop-engineering/discussions
-    about: "For general questions, ideas, or chat about loop engineering, use Discussions."
-  - name: "\ud83d\udc1b Report an issue with the docs site or showcase"
+    about: "有关循环工程的一般问题、想法或交流，请使用 Discussions。"
+  - name: "\ud83d\udc1b 报告文档站点或案例展示的问题"
     url: https://github.com/cobusgreyling/loop-engineering/issues/new?labels=docs
-    about: "Use the bug report template for the reference itself."
-  - name: "\ud83c\udf10 Add my project to Adopters"
+    about: "有关本参考项目本身的问题，请使用错误报告模板。"
+  - name: "\ud83c\udf10 将我的项目添加到采用者名单"
     url: https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml
-    about: "List your loop on the showcase adopters wall and docs/adopters.md."
-  - name: "\ud83c\udf31 Good first issues (contributor quickstart)"
+    about: "在案例展示的采用者墙和 docs/adopters.md 中展示你的循环。"
+  - name: "\ud83c\udf31 适合新手的问题（贡献者快速上手）"
     url: https://github.com/cobusgreyling/loop-engineering/discussions/123
-    about: "Scoped ~10 min–1 hr tasks. Comment I'll take this on an issue to get assigned."
+    about: "范围明确、约需 10 分钟至 1 小时的任务。在某个 issue 下评论 I'll take this 以申请分配。"
 
 labels:
   - name: "pattern-request"
-    description: "Request for a new documented loop pattern"
+    description: "请求新增一个有文档说明的循环模式"
     color: "0e8a16"
   - name: "story"
-    description: "Production story or failure report"
+    description: "生产实践故事或失效报告"
     color: "5319e7"
   - name: "tooling"
-    description: "loop-audit, registry, starters, templates"
+    description: "loop-audit、注册表、启动模板、通用模板"
     color: "1d76db"
   - name: "docs"
-    description: "Documentation, primitives, checklist, showcase"
+    description: "文档、原语、检查清单、案例展示"
     color: "bfd4f2"
   - name: "good first issue"
-    description: "Good for newcomers"
+    description: "适合新贡献者"
     color: "7057ff"

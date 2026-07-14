@@ -1,85 +1,103 @@
-# Contributing to Loop Engineering
+<a id="contributing-to-loop-engineering"></a>
 
-This repo is a **practical engineering reference**, not a hype collection. We welcome patterns, stories, tool mappings, and honest failure reports.
+# 为 Loop Engineering 做贡献
 
-## Ways to Contribute
+本仓库是一份**实用的工程参考资料**，而不是炒作内容的集合。我们欢迎模式、案例、工具映射，以及坦诚的失败报告。
 
-| Contribution | Where |
+<a id="ways-to-contribute"></a>
+
+## 参与贡献的方式
+
+| 贡献内容 | 提交位置 |
 |--------------|-------|
-| New loop pattern | `patterns/` + `patterns/registry.yaml` |
-| Production story | `stories/` |
-| Tool example | `examples/{grok,claude-code,codex,openclaw,opencode,github-actions}/` |
-| Skill template | `templates/` |
-| Starter kit | `starters/` |
-| Doc improvement | `docs/` |
+| 新的循环模式 | `patterns/` + `patterns/registry.yaml` |
+| 生产环境案例 | `stories/` |
+| 工具示例 | `examples/{grok,claude-code,codex,openclaw,opencode,github-actions}/` |
+| 技能模板 | `templates/` |
+| 入门套件 | `starters/` |
+| 文档改进 | `docs/` |
 
-## Contribution ladder
+<a id="contribution-ladder"></a>
 
-Start small — every merged PR counts.
+## 贡献阶梯
 
-| Step | Time | What to contribute |
+从小处着手——每个合并的 PR 都有价值。
+
+| 阶段 | 所需时间 | 可以贡献什么 |
 |------|------|-------------------|
-| **1** | ~15 min | Typo fix, adopters row, primitives-matrix row, or `examples/README.md` link |
-| **2** | ~1 hr | Production story in `stories/` or tool example in `examples/{tool}/` |
-| **3** | Half day | New starter, skill template, or MCP cookbook entry |
-| **4** | Full day | Full pattern in `patterns/` + `patterns/registry.yaml` entry |
+| **1** | 约 15 分钟 | 修正错别字、添加采用者条目或原语矩阵条目，或添加 `examples/README.md` 链接 |
+| **2** | 约 1 小时 | 在 `stories/` 中提交生产环境案例，或在 `examples/{tool}/` 中提交工具示例 |
+| **3** | 半天 | 新增入门套件、技能模板或 MCP 操作指南条目 |
+| **4** | 一整天 | 在 `patterns/` 中提交完整模式，并在 `patterns/registry.yaml` 中添加条目 |
 
-**Fastest paths:** [Add your project to adopters](https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml) · [Share a story issue](https://github.com/cobusgreyling/loop-engineering/issues/new?template=share-story.yml) · [`good first issue` backlog](https://github.com/cobusgreyling/loop-engineering/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+**最快的参与方式：**[将你的项目加入采用者列表](https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml) · [通过 Issue 分享案例](https://github.com/cobusgreyling/loop-engineering/issues/new?template=share-story.yml) · [`good first issue` 待办列表](https://github.com/cobusgreyling/loop-engineering/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 
-## Pattern Requirements
+<a id="pattern-requirements"></a>
 
-Every new pattern must include all sections from [templates/pattern-template.md](./templates/pattern-template.md):
+## 模式要求
 
-1. Goal (one sentence)
-2. Scheduling (per-tool commands)
-3. Required skills
-4. State schema (with example)
-5. Typical cycle (numbered steps)
-6. Verification strategy (maker/checker)
-7. Human handoff points
-8. Tool-specific notes (at least 2 tools)
-9. Failure modes table
-10. Success metrics
+每个新模式都必须包含 [templates/pattern-template.md](./templates/pattern-template.md) 中的所有章节：
 
-Also add an entry to `patterns/registry.yaml`.
+1. 目标（一句话）
+2. 调度（各工具对应的命令）
+3. 必需的技能
+4. 状态结构（包含示例）
+5. 典型循环（编号步骤）
+6. 验证策略（执行者／检查者，maker/checker）
+7. 人工交接点
+8. 工具专属说明（至少涉及 2 种工具）
+9. 失效模式表
+10. 成功指标
 
-## Story Requirements
+此外，还要在 `patterns/registry.yaml` 中添加一个条目。
 
-- Real experience (anonymize if needed)
-- Name the pattern used
-- Include at least one failure or surprise
-- Actionable lesson in one paragraph
+<a id="story-requirements"></a>
 
-## Pull Request Checklist
+## 案例要求
 
-- [ ] Links work from README or relevant index
-- [ ] No secrets, tokens, or internal URLs
-- [ ] `STATE.md` examples use `.example` suffix (gitignored live state)
-- [ ] Safety-sensitive patterns reference [docs/safety.md](./docs/safety.md)
+- 真实经历（必要时匿名化）
+- 指明所使用的模式
+- 至少包含一次失败或意外情况
+- 用一个段落说明可付诸行动的经验
 
-## Code of Conduct
+<a id="pull-request-checklist"></a>
 
-- Engineering over hype
-- Failures are first-class content
-- Tool-agnostic by default; tool-specific in labeled sections
+## Pull Request 检查清单
 
-## Maintainer response (adopters & stories)
+- [ ] 可以从 README 或相关索引正常访问链接
+- [ ] 不包含机密信息、token 或内部 URL
+- [ ] `STATE.md` 示例使用 `.example` 后缀（实时状态文件已被 Git 忽略）
+- [ ] 安全敏感的模式引用了 [docs/safety.md](./docs/safety.md)
 
-PRs that only touch `stories/`, `docs/adopters.md`, or the [Add Adopter](https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml) template get **same-day review** when possible:
+<a id="code-of-conduct"></a>
 
-1. Maintainer merges or requests one small fix within 24 hours
-2. Public thank-you on the PR or issue (`@mention` the contributor)
-3. Optional follow-up issue if the contributor wants a second PR (e.g. expand story → pattern example)
+## 行为准则
 
-Automation posts a welcome comment on new story/adopter PRs (see `.github/workflows/welcome-contributors.yml`).
+- 工程实践重于炒作
+- 将失败视为一等内容
+- 默认保持工具无关；工具专属内容应放在已明确标注的章节中
 
-## Community
+<a id="maintainer-response-adopters--stories"></a>
 
-- **Questions**: [GitHub Discussions](https://github.com/cobusgreyling/loop-engineering/discussions) (preferred) or issue with label `question`
-- **Show your loop**: [Add Adopter issue](https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml), Discussions, or a row in [docs/adopters.md](./docs/adopters.md)
-- **Loop Ready badge**: `npx @cobusgreyling/loop-audit . --badge` — paste into your README
-- **Good first issues**: look for label [`good first issue`](https://github.com/cobusgreyling/loop-engineering/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-- **Hall of fame**: [CONTRIBUTORS.md](./CONTRIBUTORS.md) — regenerate after merges with `npm run contributors:generate`
-- **Security**: see [SECURITY.md](./SECURITY.md) — do not file public issues for exploitable vulnerabilities
+## 维护者响应（采用者与案例）
 
-Thank you for helping make this the go-to reference for loop engineering.
+仅修改 `stories/`、`docs/adopters.md` 或 [Add Adopter](https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml) 模板的 PR，在条件允许时可获得**当天审核**：
+
+1. 维护者在 24 小时内合并，或要求进行一次小幅修正
+2. 在 PR 或 Issue 中公开致谢（使用 `@mention` 提及贡献者）
+3. 如果贡献者希望提交第二个 PR，可选择创建后续 Issue（例如：将案例扩展为模式示例）
+
+自动化流程会在新的案例／采用者 PR 中发布欢迎评论（参见 `.github/workflows/welcome-contributors.yml`）。
+
+<a id="community"></a>
+
+## 社区
+
+- **问题**：[GitHub Discussions](https://github.com/cobusgreyling/loop-engineering/discussions)（首选），或创建带有 `question` 标签的 Issue
+- **展示你的循环**：[Add Adopter Issue](https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml)、Discussions，或在 [docs/adopters.md](./docs/adopters.md) 中添加一行
+- **Loop Ready 徽章**：`npx @cobusgreyling/loop-audit . --badge`——粘贴到你的 README 中
+- **适合首次贡献的 Issue**：查找 [`good first issue`](https://github.com/cobusgreyling/loop-engineering/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) 标签
+- **名人堂**：[CONTRIBUTORS.md](./CONTRIBUTORS.md)——合并后使用 `npm run contributors:generate` 重新生成
+- **安全**：参见 [SECURITY.md](./SECURITY.md)——对于可利用的漏洞，请勿创建公开 Issue
+
+感谢你帮助我们将本项目打造为循环工程的首选参考资料。

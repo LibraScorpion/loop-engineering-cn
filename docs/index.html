@@ -1,16 +1,16 @@
 ---
 layout: null
-title: Loop Engineering — Showcase
+title: Loop Engineering — 项目展示
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loop Engineering — Design systems that prompt your agents</title>
-  <meta name="description" content="The practical reference for loop engineering. Patterns, starters, checklists, and tooling for Grok, Claude Code, Codex, OpenClaw, and Opencode.">
+  <title>Loop Engineering — 设计能够提示智能体的系统</title>
+  <meta name="description" content="循环工程实践参考：面向 Grok、Claude Code、Codex、OpenClaw 和 Opencode 的模式、入门套件、检查清单与工具。">
   <meta property="og:title" content="Loop Engineering">
-  <meta property="og:description" content="Stop prompting. Design the loop. Get a score. Two npx commands.">
+  <meta property="og:description" content="别再反复写提示词。设计循环，获取评分，只需两条 npx 命令。">
   <meta property="og:image" content="https://raw.githubusercontent.com/cobusgreyling/loop-engineering/main/assets/visuals/loop-engineering-social-banner.jpg">
   <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/showcase.css">
   <link rel="icon" href="https://raw.githubusercontent.com/cobusgreyling/loop-engineering/main/assets/visuals/loop-engineering-logo.svg">
@@ -26,7 +26,7 @@ title: Loop Engineering — Showcase
     <button
       type="button"
       class="nav-toggle"
-      aria-label="Open menu"
+      aria-label="打开菜单"
       aria-expanded="false"
       aria-controls="nav-menu"
     >
@@ -36,44 +36,44 @@ title: Loop Engineering — Showcase
     </button>
     <div id="nav-menu" class="nav-menu">
       <ul class="nav-links">
-        <li><a href="#patterns">Patterns</a></li>
-        <li><a href="#primitives">Primitives</a></li>
-        <li><a href="#interactive">Picker</a></li>
-        <li><a href="#start">Get Started</a></li>
-        <li><a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/QUICKSTART.md">Quickstart</a></li>
-        <li><a href="#adopters">Adopters</a></li>
-        <li><a href="https://cobusgreyling.substack.com/p/loop-engineering">Essay</a></li>
+        <li><a href="#patterns">模式</a></li>
+        <li><a href="#primitives">原语</a></li>
+        <li><a href="#interactive">模式选择器</a></li>
+        <li><a href="#start">开始使用</a></li>
+        <li><a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/QUICKSTART.md">快速入门</a></li>
+        <li><a href="#adopters">采用者</a></li>
+        <li><a href="https://cobusgreyling.substack.com/p/loop-engineering">文章</a></li>
         <li><a href="https://github.com/cobusgreyling/loop-engineering">GitHub</a></li>
       </ul>
-      <a href="https://github.com/cobusgreyling/loop-engineering" class="btn btn-primary">View Repo</a>
+      <a href="https://github.com/cobusgreyling/loop-engineering" class="btn btn-primary">查看仓库</a>
     </div>
   </div>
 </nav>
 
 <header class="hero wrap">
-  <div class="badge">Open source · Tool-agnostic · Production-ready · L3 dogfood · 7 patterns · Interactive tools</div>
-  <h1>Stop prompting.<br>Design the loop.<br>Get a score.</h1>
+  <div class="badge">开源 · 工具无关 · 生产就绪 · L3 自用验证 · 7 种模式 · 交互式工具</div>
+  <h1>别再反复写提示词。<br>设计循环。<br>获取评分。</h1>
   <p class="lead">
-    Run one command in any repo. <code>loop-init</code> scaffolds your loop and prints your <strong>Loop Ready</strong> score plus the first run line.
+    在任意仓库中运行一条命令。<code>loop-init</code> 会搭建循环框架，并输出 <strong>Loop Ready</strong> 评分及首次运行指令。
   </p>
   <div class="code-block" style="max-width:720px;margin:0 auto 24px;">
     <div class="code-header">
       <div class="code-dots"><span></span><span></span><span></span></div>
-      <span>terminal — try now</span>
-      <button onclick="copyNpxInit()" class="copy-btn">Copy</button>
+      <span>终端 — 立即试用</span>
+      <button onclick="copyNpxInit()" class="copy-btn">复制</button>
     </div>
     <pre>npx @cobusgreyling/loop-init .</pre>
   </div>
   <div class="hero-cta">
-    <a href="#start" class="btn btn-primary">Try in 60 seconds →</a>
-    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/QUICKSTART.md" class="btn btn-ghost">Quickstart</a>
-    <a href="https://cobusgreyling.substack.com/p/loop-engineering" class="btn btn-ghost">Read the Essay</a>
+    <a href="#start" class="btn btn-primary">60 秒上手 →</a>
+    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/QUICKSTART.md" class="btn btn-ghost">快速入门</a>
+    <a href="https://cobusgreyling.substack.com/p/loop-engineering" class="btn btn-ghost">阅读文章</a>
     <a href="https://cobusgreyling.github.io/goal-engineering/" class="btn btn-ghost">Goal Engineering</a>
   </div>
   <img
     class="hero-img"
     src="https://raw.githubusercontent.com/cobusgreyling/loop-engineering/main/assets/visuals/loop-audit-demo.gif"
-    alt="Loop Ready score climbs from 10 to 100"
+    alt="Loop Ready 评分从 10 上升到 100"
     loading="lazy"
     style="margin-top:24px;"
   />
@@ -81,83 +81,83 @@ title: Loop Engineering — Showcase
 
 <div class="wrap quotes">
   <div class="quote-card">
-    <blockquote>"You shouldn't be prompting coding agents anymore. You should be designing loops that prompt your agents."</blockquote>
+    <blockquote>“你不应再直接为编码智能体写提示词，而应设计能够提示智能体的循环。”</blockquote>
     <cite>— Peter Steinberger</cite>
   </div>
   <div class="quote-card">
-    <blockquote>"I don't prompt Claude anymore. I have loops running that prompt Claude. My job is to write loops."</blockquote>
-    <cite>— Boris Cherny, Head of Claude Code</cite>
+    <blockquote>“我不再直接提示 Claude，而是运行由循环来提示 Claude。我的工作就是编写循环。”</blockquote>
+    <cite>— Boris Cherny，Claude Code 负责人</cite>
   </div>
   <div class="quote-card">
-    <blockquote>"Build the loop. But build it like someone who intends to stay the engineer, not just the person who presses go."</blockquote>
+    <blockquote>“构建循环，但要像一个始终打算担当工程师的人那样构建，而不只是做那个按下启动键的人。”</blockquote>
     <cite>— Addy Osmani</cite>
   </div>
 </div>
 
 <section id="flow" class="wrap">
-  <p class="section-label">Anatomy</p>
-  <h2 class="section-title">What one loop looks like</h2>
-  <p class="section-desc">You design it once. You're not prompting every micro-step.</p>
+  <p class="section-label">结构剖析</p>
+  <h2 class="section-title">一个循环是什么样的</h2>
+  <p class="section-desc">只需设计一次，无须为每个细微步骤反复编写提示词。</p>
   <img
     class="hero-img"
     src="https://raw.githubusercontent.com/cobusgreyling/loop-engineering/main/assets/visuals/loop-cycle-animated.svg"
-    alt="Anatomy of a loop — schedule, triage, state, worktree, implementer, verifier, MCP, human gate"
+    alt="循环结构——调度、问题分诊、状态、Git 工作树、执行者、检查者、MCP 和人工审核关卡"
     loading="lazy"
     style="margin-bottom: 24px;"
   />
   <div class="flow">
-    <span class="flow-step">⏱ Schedule</span>
+    <span class="flow-step">⏱ 调度</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">👁 Triage skill</span>
+    <span class="flow-step">👁 问题分诊技能</span>
     <span class="flow-arrow">→</span>
     <span class="flow-step">📋 STATE.md</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">🌲 Worktree</span>
+    <span class="flow-step">🌲 Git 工作树</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">⚙️ Implementer</span>
+    <span class="flow-step">⚙️ 执行者</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">✓ Verifier</span>
+    <span class="flow-step">✓ 检查者</span>
     <span class="flow-arrow">→</span>
     <span class="flow-step">🔗 MCP / PR</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">🧑 Human gate</span>
+    <span class="flow-step">🧑 人工审核关卡</span>
   </div>
 </section>
 
 <section id="primitives" class="wrap">
-  <p class="section-label">Building blocks</p>
-  <h2 class="section-title">Five primitives + memory</h2>
-  <p class="section-desc">The same shape works in Grok, Claude Code, Codex, OpenClaw, Opencode, and Actions. Tool names differ; capabilities converge.</p>
+  <p class="section-label">构建模块</p>
+  <h2 class="section-title">五种原语 + 记忆</h2>
+  <p class="section-desc">同一结构适用于 Grok、Claude Code、Codex、OpenClaw、Opencode 和 GitHub Actions。工具名称各异，能力殊途同归。</p>
   <div class="primitives">
     <div class="primitive">
       <div class="icon">⏱</div>
-      <h3>Scheduling</h3>
-      <p>/loop, cron, automations</p>
+      <h3>调度</h3>
+      <p>/loop、cron、自动化</p>
     </div>
     <div class="primitive">
       <div class="icon">🌲</div>
-      <h3>Worktrees</h3>
-      <p>Parallel without collisions</p>
+      <h3>Git 工作树</h3>
+      <p>并行运行，互不冲突</p>
     </div>
     <div class="primitive">
       <div class="icon">📚</div>
-      <h3>Skills</h3>
-      <p>Intent written once</p>
+      <h3>技能</h3>
+      <p>只需编写一次意图</p>
     </div>
     <div class="primitive">
       <div class="icon">🔌</div>
-      <h3>Connectors</h3>
-      <p>MCP → real tools</p>
+      <h3>连接器</h3>
+      <p>MCP → 实际工具</p>
     </div>
     <div class="primitive">
       <div class="icon">🔀</div>
-      <h3>Sub-agents</h3>
-      <p>Maker / checker split</p>
+      <h3>子智能体</h3>
+      <p>执行者／检查者分工</p>
     </div>
     <div class="primitive">
       <div class="icon">💾</div>
-      <h3>State</h3>
-      <p>Memory outside the model</p>
+      <h3>状态</h3>
+      <p>模型之外的记忆</p>
     </div>
   </div>
   <div class="tools" style="margin-top: 40px;">
@@ -169,201 +169,202 @@ title: Loop Engineering — Showcase
     <span class="tool-pill">GitHub Actions</span>
   </div>
   <p style="text-align: center; margin-top: 24px;">
-    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/primitives-matrix.md">Full cross-tool matrix →</a>
+    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/primitives-matrix.md">完整跨工具矩阵 →</a>
   </p>
 </section>
 
 <section id="patterns" class="wrap">
-  <p class="section-label">Copy & run</p>
-  <h2 class="section-title">Production patterns</h2>
-  <p class="section-desc">Documented loops with scheduling, skills, state schemas, verification, and honest failure modes.</p>
+  <p class="section-label">复制并运行</p>
+  <h2 class="section-title">生产级模式</h2>
+  <p class="section-desc">完整记录循环的调度、技能、状态架构、验证方式及真实失效模式。</p>
   <img
     class="hero-img"
     src="https://raw.githubusercontent.com/cobusgreyling/loop-engineering/main/assets/visuals/patterns-overview.svg"
-    alt="Seven production loop patterns — cadence and token cost overview"
+    alt="七种生产级循环模式——运行节奏与 token 成本概览"
     loading="lazy"
     style="margin-bottom: 28px;"
   />
   <div class="patterns">
     <article class="pattern-card">
-      <span class="tag">Most popular</span>
-      <h3>PR Babysitter</h3>
-      <p>Shepherd PRs through review, CI, rebase, and merge. Human stays in the judgment seat.</p>
+      <span class="tag">最受欢迎</span>
+      <h3>PR 看护</h3>
+      <p>推动 PR 完成审查、CI、变基和合并，判断权始终由人掌握。</p>
       <div class="pattern-meta">
         <span>⏱ 5–15m</span>
-        <span>◆ Medium risk</span>
+        <span>◆ 中风险</span>
       </div>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/pr-babysitter.md">Read pattern →</a>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/pr-babysitter" style="margin-left:12px">Starter →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/pr-babysitter.md">阅读模式 →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/pr-babysitter" style="margin-left:12px">入门套件 →</a>
     </article>
     <article class="pattern-card">
-      <span class="tag">Start here</span>
-      <h3>Daily Triage</h3>
-      <p>Morning scan of CI, issues, and commits. Report-only week one, then small auto-wins.</p>
+      <span class="tag">从这里开始</span>
+      <h3>每日问题分诊</h3>
+      <p>每天早晨扫描 CI、Issue 和提交。第一周仅报告，之后再自动处理简单事项。</p>
       <div class="pattern-meta">
         <span>⏱ 1d–2h</span>
-        <span>◆ Low risk</span>
+        <span>◆ 低风险</span>
       </div>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/daily-triage.md">Read pattern →</a>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/minimal-loop" style="margin-left:12px">Starter →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/daily-triage.md">阅读模式 →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/minimal-loop" style="margin-left:12px">入门套件 →</a>
     </article>
     <article class="pattern-card">
-      <span class="tag">High frequency</span>
-      <h3>CI Sweeper</h3>
-      <p>React to failing checks with minimal fixes. Classify flakes. Escalate after 3 attempts.</p>
+      <span class="tag">高频</span>
+      <h3>CI 清理</h3>
+      <p>以最小修复响应失败的检查，识别不稳定测试，并在尝试 3 次后升级处理。</p>
       <div class="pattern-meta">
         <span>⏱ 5–15m</span>
-        <span>◆ Medium risk</span>
+        <span>◆ 中风险</span>
       </div>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/ci-sweeper.md">Read pattern →</a>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/ci-sweeper" style="margin-left:12px">Starter →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/ci-sweeper.md">阅读模式 →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/ci-sweeper" style="margin-left:12px">入门套件 →</a>
     </article>
     <article class="pattern-card">
-      <span class="tag">Off-peak</span>
-      <h3>Post-Merge Cleanup</h3>
-      <p>TODOs, deprecations, and tech debt after merges. Small PRs overnight.</p>
+      <span class="tag">低峰时段</span>
+      <h3>合并后清理</h3>
+      <p>处理合并后的 TODO、弃用项和技术债，夜间提交小型 PR。</p>
       <div class="pattern-meta">
         <span>⏱ 1d–6h</span>
-        <span>◆ Low risk</span>
+        <span>◆ 低风险</span>
       </div>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/post-merge-cleanup.md">Read pattern →</a>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/post-merge-cleanup" style="margin-left:12px">Starter →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/post-merge-cleanup.md">阅读模式 →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/post-merge-cleanup" style="margin-left:12px">入门套件 →</a>
     </article>
     <article class="pattern-card">
-      <span class="tag">Security</span>
-      <h3>Dependency Sweeper</h3>
-      <p>Patch CVEs and stale deps in worktrees. Majors and denylist stay human-gated.</p>
+      <span class="tag">安全</span>
+      <h3>依赖清理</h3>
+      <p>在 Git 工作树中修补 CVE 和过期依赖；主版本升级和拒绝清单项目保留人工审核关卡。</p>
       <div class="pattern-meta">
         <span>⏱ 6h–1d</span>
-        <span>◆ Medium risk</span>
+        <span>◆ 中风险</span>
       </div>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/dependency-sweeper.md">Read pattern →</a>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/dependency-sweeper" style="margin-left:12px">Starter →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/dependency-sweeper.md">阅读模式 →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/dependency-sweeper" style="margin-left:12px">入门套件 →</a>
     </article>
 
     <article class="pattern-card">
-      <span class="tag">Low risk</span>
-      <h3>Issue Triage</h3>
-      <p>Dedupe, score, and label incoming issues. Propose-only week one — pairs well with Daily Triage.</p>
+      <span class="tag">低风险</span>
+      <h3>Issue 问题分诊</h3>
+      <p>为新 Issue 去重、评分并添加标签。第一周仅提议，与每日问题分诊配合使用效果更佳。</p>
       <div class="pattern-meta">
         <span>⏱ 2h–1d</span>
-        <span>◆ Low risk</span>
+        <span>◆ 低风险</span>
       </div>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/issue-triage.md">Read pattern →</a>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/minimal-loop" style="margin-left:12px">Starter →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/issue-triage.md">阅读模式 →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/minimal-loop" style="margin-left:12px">入门套件 →</a>
     </article>
     <article class="pattern-card">
-      <span class="tag" style="color:#ffb347;">Low risk</span>
-      <h3>Changelog Drafter</h3>
-      <p>Scan merges &amp; commits, produce polished categorized release notes drafts. Human approves before publish. Huge leverage, tiny risk.</p>
+      <span class="tag" style="color:#ffb347;">低风险</span>
+      <h3>变更日志起草</h3>
+      <p>扫描合并与提交，生成经过润色并分类的发布说明草稿。发布前由人工批准，以极低风险获得显著收益。</p>
       <div class="pattern-meta">
-        <span>⏱ 1d or tag</span>
-        <span>◆ Low risk</span>
+        <span>⏱ 1d 或 tag</span>
+        <span>◆ 低风险</span>
       </div>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/changelog-drafter.md">Read pattern →</a>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/changelog-drafter" style="margin-left:12px">Starter →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/patterns/changelog-drafter.md">阅读模式 →</a>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters/changelog-drafter" style="margin-left:12px">入门套件 →</a>
     </article>
   </div>
   <div class="stats">
     <div class="stat">
       <div class="num">7</div>
-      <div class="label">Patterns</div>
+      <div class="label">模式</div>
     </div>
     <div class="stat">
       <div class="num">8</div>
-      <div class="label">Starter kits</div>
+      <div class="label">入门套件</div>
     </div>
     <div class="stat">
       <div class="num">L0→L3</div>
-      <div class="label">Readiness levels</div>
+      <div class="label">就绪度等级</div>
     </div>
     <div class="stat">
       <div class="num">100</div>
-      <div class="label">Audit score max</div>
+      <div class="label">审计最高分</div>
     </div>
   </div>
 </section>
 
 <section id="start" class="wrap">
-  <p class="section-label">5 minutes</p>
-  <h2 class="section-title">Get started</h2>
-  <p class="section-desc">Scaffold in your repo, audit readiness, run report-only for one week. <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/QUICKSTART.md">Full quickstart guide →</a></p>
+  <p class="section-label">5 分钟</p>
+  <h2 class="section-title">开始使用</h2>
+  <p class="section-desc">在仓库中搭建框架、审计就绪度，并以仅报告模式运行一周。<a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/QUICKSTART.md">完整快速入门指南 →</a></p>
+  <p class="section-desc">中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变。</p>
   <div class="code-block">
     <div class="code-header">
       <div class="code-dots"><span></span><span></span><span></span></div>
-      <span>terminal — minimal loop</span>
+      <span>终端 — 最小循环</span>
     </div>
-    <pre><span class="comment"># Scaffold starter (or copy manually)</span>
+    <pre><span class="comment"># 搭建入门套件（也可手动复制）</span>
 npx @cobusgreyling/loop-init . --pattern daily-triage --tool grok
 
-<span class="comment"># Score loop readiness (PRs get audit comments in CI)</span>
+<span class="comment"># 评估循环就绪度（PR 会在 CI 中收到审计评论）</span>
 npx @cobusgreyling/loop-audit . --suggest
 
-<span class="comment"># Grok — report only, week one</span>
+<span class="comment"># Grok——第一周仅报告</span>
 <span class="cmd">/loop</span> <span class="flag">1d</span> Run loop-triage. Update STATE.md. No auto-fix.
 
-<span class="comment"># Also try the new low-risk pattern</span>
+<span class="comment"># 也可尝试新的低风险模式</span>
 <span class="cmd">/loop</span> <span class="flag">1d</span> Run changelog-scan + draft-release-notes. Write RELEASE_NOTES_DRAFT.md. Human review only.</pre>
   </div>
   <p style="margin-top: 24px; text-align: center;">
-    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/QUICKSTART.md">Quickstart guide</a>
+    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/QUICKSTART.md">快速入门指南</a>
     ·
-    <a href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters">All starters</a>
+    <a href="https://github.com/cobusgreyling/loop-engineering/tree/main/starters">所有入门套件</a>
     ·
-    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/loop-design-checklist.md">Design checklist</a>
+    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/loop-design-checklist.md">设计检查清单</a>
     ·
-    <a href="https://github.com/cobusgreyling/loop-engineering/tree/main/stories">Production stories</a>
+    <a href="https://github.com/cobusgreyling/loop-engineering/tree/main/stories">生产案例</a>
   </p>
 </section>
 
-<!-- NEW: Interactive tools (makes the showcase actually useful to play with) -->
+<!-- 新增：交互式工具（让项目展示真正可以上手体验） -->
 <section id="interactive" class="wrap" style="padding-top: 12px;">
-  <p class="section-label">Play with it</p>
-  <h2 class="section-title">Interactive Pattern Picker &amp; Readiness Simulator</h2>
-  <p class="section-desc">Pick your pain. See the exact loop + commands. Simulate your score live.</p>
+  <p class="section-label">动手体验</p>
+  <h2 class="section-title">交互式模式选择器与就绪度模拟器</h2>
+  <p class="section-desc">选择当前痛点，查看对应的循环与命令，并实时模拟评分。</p>
 
   <div class="interactive">
-    <h3 style="font-size:1rem; margin-bottom:8px;">What's hurting right now?</h3>
+    <h3 style="font-size:1rem; margin-bottom:8px;">你现在遇到了什么问题？</h3>
     <div class="symptom-pills" id="symptom-pills">
-      <div class="symptom-pill" data-symptom="ci">CI red / flaky checks</div>
-      <div class="symptom-pill" data-symptom="prs">PRs stalling on review/CI</div>
-      <div class="symptom-pill" data-symptom="morning">Morning chaos — what should I do?</div>
-      <div class="symptom-pill" data-symptom="deps">Dependabot / CVE noise</div>
-      <div class="symptom-pill" data-symptom="debt">Merge debt / TODOs piling up</div>
-      <div class="symptom-pill" data-symptom="releases">Stale release notes / changelogs</div>
-      <div class="symptom-pill" data-symptom="issues">Noisy issue backlog / duplicates</div>
+      <div class="symptom-pill" data-symptom="ci">CI 失败／检查不稳定</div>
+      <div class="symptom-pill" data-symptom="prs">PR 卡在审查或 CI</div>
+      <div class="symptom-pill" data-symptom="morning">每天早晨一团乱——我该做什么？</div>
+      <div class="symptom-pill" data-symptom="deps">Dependabot／CVE 噪声</div>
+      <div class="symptom-pill" data-symptom="debt">合并债务／TODO 不断堆积</div>
+      <div class="symptom-pill" data-symptom="releases">发布说明／变更日志陈旧</div>
+      <div class="symptom-pill" data-symptom="issues">Issue 积压嘈杂／重复项过多</div>
     </div>
 
     <div id="reco-output" class="reco-card" style="display:none;">
-      <strong>Recommended:</strong> <span id="reco-name"></span> <span id="reco-meta" style="color:var(--text-muted);"></span><br>
+      <strong>推荐：</strong> <span id="reco-name"></span> <span id="reco-meta" style="color:var(--text-muted);"></span><br>
       <div id="reco-cost" class="reco-cost" style="display:none;"></div>
-      <span style="font-size:0.8rem;">Scaffold:</span> <code id="reco-npx" class="cmd"></code> <button onclick="copyRecoNpx()" class="copy-btn">Copy</button><br>
-      <span style="font-size:0.8rem;">First run (report-only):</span> <code id="reco-loop" style="font-family:var(--font-mono);"></code>
+      <span style="font-size:0.8rem;">搭建框架：</span> <code id="reco-npx" class="cmd"></code> <button onclick="copyRecoNpx()" class="copy-btn">复制</button><br>
+      <span style="font-size:0.8rem;">首次运行（仅报告；以下为供智能体执行的原始英文指令，为避免语义漂移保持不变）：</span> <code id="reco-loop" style="font-family:var(--font-mono);"></code>
       <div style="margin-top:8px;">
-        <a id="reco-link" class="link" href="#" target="_blank" rel="noopener">Read full pattern →</a>
-        <a id="reco-starter" class="link" href="#" target="_blank" rel="noopener" style="margin-left:12px">Open starter →</a>
+        <a id="reco-link" class="link" href="#" target="_blank" rel="noopener">阅读完整模式 →</a>
+        <a id="reco-starter" class="link" href="#" target="_blank" rel="noopener" style="margin-left:12px">打开入门套件 →</a>
       </div>
     </div>
   </div>
 
   <div class="interactive">
-    <h3 style="font-size:1rem; margin-bottom:8px;">Live Loop Readiness Simulator (mirrors loop-audit)</h3>
-    <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">Check the boxes you already have (or plan to add). Score updates live.</p>
+    <h3 style="font-size:1rem; margin-bottom:8px;">循环就绪度实时模拟器（与 loop-audit 一致）</h3>
+    <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">勾选已有（或计划添加）的项目，评分会实时更新。</p>
 
     <div class="check-grid" id="sim-checks">
-      <label class="check-item"><input type="checkbox" data-sig="stateFile"> State file (STATE.md or pattern state)</label>
-      <label class="check-item"><input type="checkbox" data-sig="triage"> Triage skill present</label>
-      <label class="check-item"><input type="checkbox" data-sig="verifier"> Verifier skill / maker-checker</label>
-      <label class="check-item"><input type="checkbox" data-sig="loopConfig"> LOOP.md (cadence + gates)</label>
-      <label class="check-item"><input type="checkbox" data-sig="safety"> Safety docs or LOOP.md gates</label>
-      <label class="check-item"><input type="checkbox" data-sig="github"> .github + workflows (dogfood)</label>
-      <label class="check-item"><input type="checkbox" data-sig="mcp"> MCP / connectors configured</label>
-      <label class="check-item"><input type="checkbox" data-sig="worktree"> Worktree isolation evidence</label>
+      <label class="check-item"><input type="checkbox" data-sig="stateFile"> 状态文件（STATE.md 或模式状态）</label>
+      <label class="check-item"><input type="checkbox" data-sig="triage"> 已有问题分诊技能</label>
+      <label class="check-item"><input type="checkbox" data-sig="verifier"> 检查者技能／maker-checker</label>
+      <label class="check-item"><input type="checkbox" data-sig="loopConfig"> LOOP.md（运行节奏 + 审核关卡）</label>
+      <label class="check-item"><input type="checkbox" data-sig="safety"> 安全文档或 LOOP.md 审核关卡</label>
+      <label class="check-item"><input type="checkbox" data-sig="github"> .github + 工作流（自用验证）</label>
+      <label class="check-item"><input type="checkbox" data-sig="mcp"> 已配置 MCP／连接器</label>
+      <label class="check-item"><input type="checkbox" data-sig="worktree"> Git 工作树隔离证据</label>
       <label class="check-item"><input type="checkbox" data-sig="registry"> patterns/registry.yaml</label>
-      <label class="check-item"><input type="checkbox" data-sig="budgetDoc"> loop-budget.md (token caps)</label>
-      <label class="check-item"><input type="checkbox" data-sig="runLog"> loop-run-log.md (run history)</label>
-      <label class="check-item"><input type="checkbox" data-sig="loopMdBudget"> LOOP.md budget section</label>
-      <label class="check-item"><input type="checkbox" data-sig="activity"> Loop activity (real runs / "Last run" timestamps)</label>
+      <label class="check-item"><input type="checkbox" data-sig="budgetDoc"> loop-budget.md（token 上限）</label>
+      <label class="check-item"><input type="checkbox" data-sig="runLog"> loop-run-log.md（运行历史）</label>
+      <label class="check-item"><input type="checkbox" data-sig="loopMdBudget"> LOOP.md 预算章节</label>
+      <label class="check-item"><input type="checkbox" data-sig="activity"> 循环活动（真实运行／“Last run”（上次运行）时间戳）</label>
     </div>
 
     <div class="live-score">
@@ -372,122 +373,122 @@ npx @cobusgreyling/loop-audit . --suggest
         <div style="font-size:0.7rem; color:var(--text-muted);">/ 100</div>
       </div>
       <div class="meta">
-        <div><strong id="live-level">L0</strong> — <span id="live-assessment">Not loop-ready — start with a starter.</span></div>
+        <div><strong id="live-level">L0</strong> — <span id="live-assessment">循环尚未就绪——请从入门套件开始。</span></div>
         <div id="live-reco" style="margin-top:4px; font-size:0.8rem; color:var(--accent);"></div>
       </div>
     </div>
 
     <div style="font-size:0.75rem; color:var(--text-muted);">
-      Client-side approximation of <code>loop-audit</code> v1.4 scoring. L3 requires verifier + state + cost observability + proven activity.
+      客户端对 <code>loop-audit</code> v1.4 评分的近似模拟。L3 需要检查者 + 状态 + 成本可观测性 + 已验证的活动。
     </div>
   </div>
 </section>
 
 <section class="wrap" style="padding-top: 0;">
-  <p class="section-label">Deep dives</p>
-  <h2 class="section-title">Engineering, not hype</h2>
+  <p class="section-label">深入了解</p>
+  <h2 class="section-title">重在工程，而非炒作</h2>
   <div class="patterns">
     <article class="pattern-card">
-      <h3>Failure Modes</h3>
-      <p>Infinite fix loops, verifier theater, token burn — with mitigations.</p>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/failure-modes.md">Read catalog →</a>
+      <h3>失效模式</h3>
+      <p>无限修复循环、检查流于形式、token 浪费——以及相应缓解措施。</p>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/failure-modes.md">阅读目录 →</a>
     </article>
     <article class="pattern-card">
-      <h3>Safety & Guardrails</h3>
-      <p>Path denylist, auto-merge policy, MCP least privilege.</p>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/safety.md">Read safety doc →</a>
+      <h3>安全与护栏</h3>
+      <p>路径拒绝清单、自动合并策略、MCP 最小权限。</p>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/safety.md">阅读安全文档 →</a>
     </article>
     <article class="pattern-card">
       <h3>loop-audit CLI</h3>
-      <p>Loop Readiness Score 0–100. Know before you ship unattended.</p>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/tools/loop-audit">Run audit →</a>
+      <p>循环就绪度评分 0–100。部署无人值守运行前做到心中有数。</p>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/tools/loop-audit">运行审计 →</a>
     </article>
     <article class="pattern-card">
-      <h3>Pattern Picker</h3>
-      <p>CI red? PRs stalling? Morning chaos? Pick the right loop first.</p>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/pattern-picker.md">Choose pattern →</a>
+      <h3>模式选择器</h3>
+      <p>CI 失败？PR 卡住？每天早晨一团乱？先选择合适的循环。</p>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/pattern-picker.md">选择模式 →</a>
     </article>
   </div>
 </section>
 
 <section id="observability" class="wrap" style="padding-top: 0;">
-  <p class="section-label">Stay in control</p>
-  <h2 class="section-title">Observability &amp; cost</h2>
-  <p class="section-desc">Loops should be boring and transparent. Use state files, run logs, and budgets.</p>
+  <p class="section-label">始终掌控</p>
+  <h2 class="section-title">可观测性与成本</h2>
+  <p class="section-desc">循环应当平稳、透明。请使用状态文件、运行日志和预算。</p>
   <div class="patterns">
     <article class="pattern-card">
-      <h3>STATE.md + pattern state</h3>
-      <p>The durable memory spine. Every loop reads it at start and writes outcomes.</p>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/STATE.md">See example →</a>
+      <h3>STATE.md + 模式状态</h3>
+      <p>持久记忆的主干。每个循环启动时读取它，结束时写入结果。</p>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/blob/main/STATE.md">查看示例 →</a>
     </article>
     <article class="pattern-card">
-      <h3>Run logs &amp; budgets</h3>
-      <p>Structured JSON per run + daily token / spawn limits. Detect problems before they explode.</p>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/stories">See sample logs →</a>
+      <h3>运行日志与预算</h3>
+      <p>每次运行记录结构化 JSON，并设置每日 token／启动数量上限，在问题失控前及时发现。</p>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/stories">查看日志示例 →</a>
     </article>
     <article class="pattern-card">
-      <h3>loop-audit on every PR</h3>
-      <p>Automated Loop Readiness Score + suggestions. The reference dogfoods it.</p>
-      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/tools/loop-audit">Run it →</a>
+      <h3>每个 PR 都运行 loop-audit</h3>
+      <p>自动生成循环就绪度评分与改进建议。本参考项目也在自用验证。</p>
+      <a class="link" href="https://github.com/cobusgreyling/loop-engineering/tree/main/tools/loop-audit">立即运行 →</a>
     </article>
   </div>
 </section>
 
 <div class="cta">
-  <h2>Ready to stop prompting?</h2>
-  <p>The best loops are boring, reliable, and transparent.</p>
+  <h2>准备好告别反复编写提示词了吗？</h2>
+  <p>最好的循环平稳、可靠且透明。</p>
   <div class="cta-actions">
-    <a href="https://github.com/cobusgreyling/loop-engineering" class="btn btn-primary">Star on GitHub</a>
-    <a href="https://github.com/cobusgreyling/loop-engineering/stargazers" class="cta-stars" aria-label="GitHub stars">
+    <a href="https://github.com/cobusgreyling/loop-engineering" class="btn btn-primary">在 GitHub 上 Star</a>
+    <a href="https://github.com/cobusgreyling/loop-engineering/stargazers" class="cta-stars" aria-label="GitHub Star 数量">
       <img
         src="https://img.shields.io/github/stars/cobusgreyling/loop-engineering?style=for-the-badge&logo=github&label=Stars&labelColor=111a28&color=3ee8c5"
-        alt="GitHub stars"
+        alt="GitHub Star 数量"
         height="32"
       />
     </a>
-    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/CONTRIBUTING.md" class="btn btn-ghost">Contribute a pattern</a>
+    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/CONTRIBUTING.md" class="btn btn-ghost">贡献模式</a>
   </div>
 </div>
 
 <section id="adopters" class="wrap">
-  <p class="section-label">Community</p>
-  <h2 class="section-title">Adopters</h2>
+  <p class="section-label">社区</p>
+  <h2 class="section-title">采用者</h2>
   <p class="section-desc">
-    Forks mean people are trying this. Listed projects run (or adapted) loops from this reference.
-    Add yours via the <a href="https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml">Add Adopter issue</a>
-    or a PR to <code>docs/adopters.md</code>.
+    Fork 代表人们正在尝试这种方法。下列项目运行了本参考项目中的循环，或在其基础上进行了调整。
+    你可以提交 <a href="https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml">“添加采用者”Issue</a>，
+    或向 <code>docs/adopters.md</code> 提交 PR 来添加自己的项目。
   </p>
 
   <div class="adopters-cta card">
     <div>
-      <h3>Show your Loop Ready score</h3>
-      <p>Paste a badge in your README after <code>loop-audit</code> — social proof for your team and contributors.</p>
+      <h3>展示你的 Loop Ready 评分</h3>
+      <p>运行 <code>loop-audit</code> 后在 README 中粘贴徽章，为团队和贡献者提供公开佐证。</p>
       <code class="inline-cmd">npx @cobusgreyling/loop-audit . --badge</code>
     </div>
-    <a href="https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml" class="btn btn-primary">Add my project →</a>
+    <a href="https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml" class="btn btn-primary">添加我的项目 →</a>
   </div>
 
   <div class="adopters-grid">
     <article class="adopter-card card">
       <h4><a href="https://github.com/cobusgreyling/loop-engineering">loop-engineering</a></h4>
-      <p class="adopter-meta">Daily Triage · Changelog Drafter · audit dogfood · <strong>L3</strong></p>
-      <p class="adopter-note">Reference implementation — loop-audit on every PR; readiness score 100.</p>
+      <p class="adopter-meta">每日问题分诊 · 变更日志起草 · 审计自用验证 · <strong>L3</strong></p>
+      <p class="adopter-note">参考实现——每个 PR 都运行 loop-audit；就绪度评分 100。</p>
     </article>
     <article class="adopter-card card">
-      <h4><a href="https://github.com/cobusgreyling/loop-engineering">loop-engineering (maintainer)</a></h4>
-      <p class="adopter-meta">Post-Merge Cleanup · Grok + Actions · <strong>L1→L2</strong></p>
-      <p class="adopter-note">Off-peak scan; verifier caught doc/API drift.</p>
+      <h4><a href="https://github.com/cobusgreyling/loop-engineering">loop-engineering（维护者）</a></h4>
+      <p class="adopter-meta">合并后清理 · Grok + GitHub Actions · <strong>L1→L2</strong></p>
+      <p class="adopter-note">在低峰时段扫描；检查者发现了文档与 API 的偏差。</p>
     </article>
     <article class="adopter-card card">
-      <h4><a href="https://github.com/cobusgreyling/loop-engineering">loop-engineering (maintainer)</a></h4>
-      <p class="adopter-meta">Issue Triage + Daily Triage · Grok · <strong>L1</strong></p>
-      <p class="adopter-note">Propose labels only week one; pairs with morning STATE.md triage.</p>
+      <h4><a href="https://github.com/cobusgreyling/loop-engineering">loop-engineering（维护者）</a></h4>
+      <p class="adopter-meta">Issue 问题分诊 + 每日问题分诊 · Grok · <strong>L1</strong></p>
+      <p class="adopter-note">第一周只提议标签；与每天早晨的 STATE.md 问题分诊配合使用。</p>
     </article>
     <article class="adopter-card card adopter-placeholder">
-      <h4>Your project here</h4>
-      <p class="adopter-meta">Pattern · Tool · Level</p>
-      <p class="adopter-note">One line on what worked or broke — failures are first-class.</p>
-      <a href="https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml" class="btn btn-ghost">List yours →</a>
+      <h4>期待你的项目</h4>
+      <p class="adopter-meta">模式 · 工具 · 等级</p>
+      <p class="adopter-note">用一行说明哪些做法有效或出了问题——失败经验同样重要。</p>
+      <a href="https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml" class="btn btn-ghost">提交你的项目 →</a>
     </article>
   </div>
 </section>
@@ -496,15 +497,15 @@ npx @cobusgreyling/loop-audit . --suggest
   <p>
     <a href="https://github.com/cobusgreyling/loop-engineering">GitHub</a>
     ·
-    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/QUICKSTART.md">Quickstart</a>
+    <a href="https://github.com/cobusgreyling/loop-engineering/blob/main/docs/QUICKSTART.md">快速入门</a>
     ·
-    <a href="https://cobusgreyling.substack.com/p/loop-engineering">Essay</a>
+    <a href="https://cobusgreyling.substack.com/p/loop-engineering">文章</a>
     ·
     <a href="https://addyosmani.com/blog/loop-engineering/">Addy Osmani</a>
     ·
-    MIT License
+    MIT 许可证
     ·
-    Built by <a href="https://github.com/cobusgreyling">Cobus Greyling</a>
+    由 <a href="https://github.com/cobusgreyling">Cobus Greyling</a> 构建
   </p>
 </footer>
 
@@ -517,16 +518,16 @@ function copyNpxInit() {
   });
   // visual feedback
   const orig = event.target.textContent;
-  event.target.textContent = 'Copied!';
-  setTimeout(() => { if (event.target) event.target.textContent = orig || 'Copy'; }, 1400);
+  event.target.textContent = '已复制！';
+  setTimeout(() => { if (event.target) event.target.textContent = orig || '复制'; }, 1400);
 }
 function copyNpxAudit() {
   const txt = 'npx @cobusgreyling/loop-audit . --suggest';
   navigator.clipboard.writeText(txt);
   const t = event.target;
   const orig = t.textContent;
-  t.textContent = 'Copied!';
-  setTimeout(() => t.textContent = orig || 'Copy', 1400);
+  t.textContent = '已复制！';
+  setTimeout(() => t.textContent = orig || '复制', 1400);
 }
 
 // === loop-cost estimator (client port of tools/loop-cost/src/estimator.ts) ===
@@ -608,19 +609,21 @@ function estimatePatternCost(patternId, level, cadence) {
 function formatCostSummary(estimate) {
   if (!estimate) return '';
   const capNote = estimate.overCap
-    ? ` · <span style="color:#ffb347;">above suggested cap</span>`
+    ? ` · <span style="color:#ffb347;">高于建议上限</span>`
     : '';
   const earlyExit = estimate.earlyExitRequired
-    ? ' · early-exit required when watchlist empty'
+    ? ' · 监视列表为空时必须提前退出'
     : '';
-  return `<strong>~${formatTokens(estimate.realisticDay)} tokens/day</strong> at ${estimate.level} (${estimate.cadence}, ${estimate.runsPerDay} run${estimate.runsPerDay === 1 ? '' : 's'}/day) · cap ${formatTokens(estimate.suggestedDailyCap)}/day · tier ${estimate.tokenCostTier}${capNote}${earlyExit}<br><span style="font-size:0.75rem;">Refine: <code>npx @cobusgreyling/loop-cost --pattern ${estimate.patternId} --level ${estimate.level} --cadence ${estimate.cadence}</code></span>`;
+  const tierLabels = { low: '低', medium: '中', high: '高', 'very-high': '极高' };
+  const tierLabel = tierLabels[estimate.tokenCostTier] || estimate.tokenCostTier;
+  return `<strong>~${formatTokens(estimate.realisticDay)} tokens/天</strong>，等级 ${estimate.level}（${estimate.cadence}，每天 ${estimate.runsPerDay} 次）· 上限 ${formatTokens(estimate.suggestedDailyCap)}/天 · 成本层级 ${tierLabel}${capNote}${earlyExit}<br><span style="font-size:0.75rem;">进一步估算：<code>npx @cobusgreyling/loop-cost --pattern ${estimate.patternId} --level ${estimate.level} --cadence ${estimate.cadence}</code></span>`;
 }
 
 // === Interactive Pattern Picker ===
 const PATTERNS = {
   ci: {
-    name: 'CI Sweeper',
-    meta: '5–15m • Medium risk • L2 cautious',
+    name: 'CI 清理',
+    meta: '5–15m • 中风险 • 谨慎使用 L2',
     patternId: 'ci-sweeper',
     costLevel: 'L2',
     costCadence: '15m',
@@ -630,8 +633,8 @@ const PATTERNS = {
     starterHref: 'https://github.com/cobusgreyling/loop-engineering/tree/main/starters/ci-sweeper'
   },
   prs: {
-    name: 'PR Babysitter',
-    meta: '5–15m • Medium risk • L1 watch → L2',
+    name: 'PR 看护',
+    meta: '5–15m • 中风险 • L1 观察 → L2',
     patternId: 'pr-babysitter',
     costLevel: 'L1',
     costCadence: '10m',
@@ -641,8 +644,8 @@ const PATTERNS = {
     starterHref: 'https://github.com/cobusgreyling/loop-engineering/tree/main/starters/pr-babysitter'
   },
   morning: {
-    name: 'Daily Triage',
-    meta: '1d–2h • Low risk • Start here (L1)',
+    name: '每日问题分诊',
+    meta: '1d–2h • 低风险 • 从这里开始（L1）',
     patternId: 'daily-triage',
     costLevel: 'L1',
     costCadence: '1d',
@@ -652,8 +655,8 @@ const PATTERNS = {
     starterHref: 'https://github.com/cobusgreyling/loop-engineering/tree/main/starters/minimal-loop'
   },
   deps: {
-    name: 'Dependency Sweeper',
-    meta: '6h–1d • Medium risk • Patch-only first',
+    name: '依赖清理',
+    meta: '6h–1d • 中风险 • 最初仅限补丁版本',
     patternId: 'dependency-sweeper',
     costLevel: 'L2',
     costCadence: '6h',
@@ -663,8 +666,8 @@ const PATTERNS = {
     starterHref: 'https://github.com/cobusgreyling/loop-engineering/tree/main/starters/dependency-sweeper'
   },
   debt: {
-    name: 'Post-Merge Cleanup',
-    meta: '1d–6h • Low risk • Off-peak L1',
+    name: '合并后清理',
+    meta: '1d–6h • 低风险 • 低峰时段 L1',
     patternId: 'post-merge-cleanup',
     costLevel: 'L1',
     costCadence: '1d',
@@ -674,8 +677,8 @@ const PATTERNS = {
     starterHref: 'https://github.com/cobusgreyling/loop-engineering/tree/main/starters/post-merge-cleanup'
   },
   releases: {
-    name: 'Changelog Drafter',
-    meta: '1d or tag • Low risk • New favorite',
+    name: '变更日志起草',
+    meta: '1d 或 tag • 低风险 • 新晋优选',
     patternId: 'changelog-drafter',
     costLevel: 'L1',
     costCadence: '1d',
@@ -685,8 +688,8 @@ const PATTERNS = {
     starterHref: 'https://github.com/cobusgreyling/loop-engineering/tree/main/starters/changelog-drafter'
   },
   issues: {
-    name: 'Issue Triage',
-    meta: '2h–1d • Low risk • Pairs with Daily Triage',
+    name: 'Issue 问题分诊',
+    meta: '2h–1d • 低风险 • 可与每日问题分诊配合',
     patternId: 'issue-triage',
     costLevel: 'L1',
     costCadence: '1d',
@@ -740,7 +743,7 @@ function setupPatternPicker() {
     const btns = document.querySelectorAll('#reco-output .copy-btn');
     if (btns[0]) {
       const o = btns[0].textContent;
-      btns[0].textContent = 'Copied!';
+      btns[0].textContent = '已复制！';
       setTimeout(() => btns[0].textContent = o, 1200);
     }
   };
@@ -781,8 +784,9 @@ function setupSimulator() {
     score = Math.max(0, Math.min(100, score));
 
     let level = 'L0';
-    let assess = 'Not loop-ready — start with a starter from this repo.';
-    let reco = 'Add STATE.md + one triage skill first.';
+    let assess = '循环尚未就绪——请从本仓库的入门套件开始。';
+    let reco = '请先添加 STATE.md 和一个问题分诊技能。';
+    let recoNote = '';
 
     const hasActivity = !!sig.activity;
     const hasState = !!sig.stateFile;
@@ -792,34 +796,35 @@ function setupSimulator() {
 
     if (score >= 78 && hasVerifier && hasState && hasActivity && costReady) {
       level = 'L3';
-      assess = 'Strong loop readiness — good candidate for L3 with explicit gates.';
-      reco = 'You have structure, cost observability, and real usage. Run unattended only where allowlisted.';
+      assess = '循环就绪度很高——设置明确审核关卡后很适合达到 L3。';
+      reco = '你已具备完整结构、成本可观测性和真实使用记录。仅允许在许可清单范围内无人值守运行。';
     } else if (score >= 78 && hasVerifier && hasState && !costReady) {
       level = 'L2';
-      assess = 'Strong signals but missing cost observability — add budget + run log before L3.';
-      reco = 'npx @cobusgreyling/loop-init . --pattern daily-triage --tool grok (scaffolds loop-budget.md + loop-run-log.md)';
+      assess = '就绪信号很强，但缺少成本可观测性——达到 L3 前请添加预算和运行日志。';
+      reco = 'npx @cobusgreyling/loop-init . --pattern daily-triage --tool grok';
+      recoNote = '（会搭建 loop-budget.md + loop-run-log.md）';
     } else if (score >= 78 && hasVerifier && hasState && costReady && !hasActivity) {
       level = 'L2';
-      assess = 'Strong structure but no proven loop runs yet.';
-      reco = 'Run one L1 loop, update STATE.md, and commit — activity is required for L3.';
+      assess = '结构完善，但尚无经验证的循环运行记录。';
+      reco = '运行一次 L1 循环、更新 STATE.md 并提交——L3 必须具备活动记录。';
     } else if (score >= 58 && hasTriage) {
       level = 'L2';
-      assess = 'Good foundation — add missing verifier + safety docs for L3.';
-      reco = 'Add loop-verifier + document human gates in LOOP.md.';
+      assess = '基础良好——补充缺少的检查者和安全文档即可向 L3 迈进。';
+      reco = '添加 loop-verifier，并在 LOOP.md 中记录人工审核关卡。';
     } else if (score >= 38 && hasState) {
       level = 'L1';
-      assess = 'Early loop setup — focus on L1 state + triage before enabling actions.';
-      reco = 'Run report-only for a week, then add verifier for assisted fixes.';
+      assess = '循环刚刚搭建——启用操作前请先完善 L1 状态和问题分诊。';
+      reco = '以仅报告模式运行一周，再添加检查者以进行辅助修复。';
     } else {
       level = 'L0';
-      assess = 'Not loop-ready — start with a starter from this repo (minimal-loop or pr-babysitter).';
+      assess = '循环尚未就绪——请从本仓库的入门套件（minimal-loop 或 pr-babysitter）开始。';
       reco = 'npx @cobusgreyling/loop-init . --pattern daily-triage --tool grok';
     }
 
     scoreEl.textContent = score;
     levelEl.textContent = level;
     assessEl.textContent = assess;
-    recoEl.textContent = 'Next: ' + reco;
+    recoEl.textContent = '下一步：' + reco + recoNote;
   }
 
   checks.forEach(ch => ch.addEventListener('change', computeLive));
@@ -836,14 +841,14 @@ function setupMobileNav() {
   const closeMenu = () => {
     menu.classList.remove('open');
     toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', 'Open menu');
+    toggle.setAttribute('aria-label', '打开菜单');
     document.body.classList.remove('nav-open');
   };
 
   toggle.addEventListener('click', () => {
     const open = menu.classList.toggle('open');
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    toggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
     document.body.classList.toggle('nav-open', open);
   });
 

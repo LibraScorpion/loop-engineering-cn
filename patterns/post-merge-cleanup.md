@@ -1,25 +1,35 @@
-# Post-Merge Cleanup Loop
+<a id="post-merge-cleanup-loop"></a>
 
-**Goal**: After merges to main, sweep for follow-up work — deprecations, TODOs, tech debt tickets, stale feature flags, and documentation gaps — without blocking the merge itself.
+# Post-Merge Cleanup Loop（合并后清理循环）
 
-## Scheduling
+**Goal（目标）**：在内容合并至 main 后，扫描需要跟进的工作——弃用项、TODO、技术债工单、陈旧的 feature flag 和文档缺口——但不因此阻塞合并本身。
 
-**Recommended**:
-- `/loop 1d` or `/loop 6h` (lower urgency than CI sweeper)
-- Trigger on merge events via GitHub webhook → Action (event-driven)
-- Weekly cron for smaller teams
+<a id="scheduling"></a>
 
-Run after working hours or overnight so it doesn't compete with active development loops.
+## Scheduling（运行调度）
 
-## Required Skills
+**Recommended（建议）**：
+- `/loop 1d` 或 `/loop 6h`（紧迫性低于 CI sweeper）
+- 通过 GitHub webhook → Action，在合并事件发生时触发（事件驱动）
+- 较小的团队可使用每周 cron
 
-- `post-merge-scan` — Read recent merges, diff summaries, linked tickets; identify cleanup opportunities
-- `minimal-fix` — Small follow-ups (remove dead code, update deprecation notices, fix broken links in docs)
-- Project conventions skill — What "cleanup" means in your repo
+在工作时间以外或夜间运行，以免与活跃的开发循环争用资源。
 
-## State
+<a id="required-skills"></a>
 
-`post-merge-state.md`:
+## Required Skills（必需技能）
+
+- `post-merge-scan` — 读取最近的合并、diff 摘要和关联工单；识别清理机会
+- `minimal-fix` — 小型跟进工作（移除无效代码、更新弃用通知、修复文档中的失效链接）
+- Project conventions skill（项目约定技能）— 明确你的仓库中“清理”的含义
+
+<a id="state"></a>
+
+## State（状态）
+
+`post-merge-state.md`：
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```markdown
 # Post-Merge Cleanup
@@ -40,77 +50,98 @@ Last run: 2026-06-09 22:00 UTC
 - PR #1238 — large refactor deferred; ticket ENG-1001 created
 ```
 
-## How the Loop Runs (Typical Cycle)
+<a id="how-the-loop-runs-typical-cycle"></a>
 
-1. List merges to main since last run (or last N days).
-2. For each merge: scan diff for TODOs, deprecations, `// remove after`, feature flags, broken doc links.
-3. Cross-reference linked Linear/GitHub issues for explicit follow-ups.
-4. Prioritize: small + low-risk → propose fix in worktree; large → create ticket + flag human.
-5. Verifier confirms cleanup doesn't change behavior (except intentional removals).
-6. Open small PRs or batch into a single "cleanup" PR per day.
-7. Update state; prune completed items.
+## How the Loop Runs (Typical Cycle)（循环如何运行：典型周期）
 
-## Verification Strategy
+1. 列出自上次运行（或 last N days，即最近 N 天）以来合并至 main 的内容。
+2. 针对每次合并：扫描 diff，查找 TODO、弃用项、`// remove after`、feature flag 和失效的文档链接。
+3. 交叉检查关联的 Linear/GitHub issue，查找明确的跟进项。
+4. 确定优先级：小型 + 低风险 → 在 Git 工作树中提议修复；大型 → 创建工单 + 提醒人工。
+5. 验证者确认清理工作不会改变行为（有意移除的内容除外）。
+6. 创建小型 PR，或每天将改动合并到一个“cleanup”PR 中。
+7. 更新状态；清除已完成的项目。
 
-- Cleanup must not alter behavior unless explicitly removing dead code paths.
-- Verifier runs full test suite — regressions mean immediate handoff.
-- No auto-merge for cleanup PRs touching >10 files without human approval.
+<a id="verification-strategy"></a>
 
-## Human Handoff Points
+## Verification Strategy（验证策略）
 
-- Architectural debt requiring design discussion
-- Feature flag removal that affects production config
-- Deprecations with external API consumers
-- Any cleanup the loop has attempted twice without passing tests
+- 除非明确要移除无效代码路径，否则清理工作不得改变行为。
+- 验证者（verifier）运行完整测试套件——一旦出现回归，立即交接给人工。
+- 清理 PR 涉及 >10 个文件时，未经人工批准不得自动合并。
 
-## Tool-Specific Notes
+<a id="human-handoff-points"></a>
 
-**Grok Build TUI**:
+## Human Handoff Points（人工交接点）
+
+- 需要设计讨论的架构债务
+- 会影响生产环境配置的 feature flag 移除
+- 涉及外部 API 消费者的弃用项
+- 循环已尝试两次、但仍未通过测试的任何清理工作
+
+<a id="tool-specific-notes"></a>
+
+## Tool-Specific Notes（特定工具说明）
+
+**Grok Build TUI**：
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
+
 ```bash
 /loop 1d Scan merges to main in the last 24h. Identify cleanup items. For small low-risk items: worktree + minimal fix + verifier. Update post-merge-state.md. Create tickets for larger items.
 ```
 
-**Claude Code**:
+**Claude Code**：
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
+
 ```bash
 /loop 6h /post-merge-sweeper
 ```
-(Boris Cherny has described similar flows in the community.)
 
-**Codex**:
-- Automation: "Post-merge sweeper" on daily cadence, results to Triage inbox.
+（Boris Cherny 曾在社区中介绍过类似流程。）
 
-**GitHub Actions**:
-- See `examples/github-actions/post-merge-cleanup.yml` — triggers on push to main.
+**Codex**：
+- 自动化：按每日运行节奏执行 "Post-merge sweeper"，结果发送至 Triage inbox。
 
-## Failure Modes & Mitigations
+**GitHub Actions**：
+- 请参阅 `examples/github-actions/post-merge-cleanup.yml`——在内容推送至 main 时触发。
 
-| Failure | Mitigation |
+<a id="failure-modes--mitigations"></a>
+
+## Failure Modes & Mitigations（失效模式与缓解措施）
+
+| Failure（失效） | Mitigation（缓解措施） |
 |---------|------------|
-| Over-aggressive deletion | Verifier + "no behavior change" rule; human gate for large diffs |
-| Missing merges | Use GitHub API merge list, not just local git log |
-| Noise from every TODO | Only act on TODOs with merge context or linked tickets |
-| Competing with feature work | Run off-peak; cap auto-PRs per day (e.g. 2) |
+| 过度激进的删除 | 验证者 + “不改变行为”规则；大型 diff 设置人工审核关卡 |
+| 遗漏合并 | 使用 GitHub API 的合并列表，而不只依赖本地 git log |
+| 每个 TODO 都产生噪声 | 仅处理具有合并上下文或关联工单的 TODO |
+| 与功能开发争用资源 | 在非高峰时段运行；限制每天自动创建的 PR 数量（例如 2） |
 
-## Cost Profile
+<a id="cost-profile"></a>
 
-| Scenario | Tokens/run | Notes |
+## Cost Profile（成本概况）
+
+| Scenario（情景） | Tokens/run | Notes（说明） |
 |----------|------------|-------|
-| No-op | ~5k | No recent merges to scan |
-| Scan + prioritize | ~40k | Merge list + TODO scan |
-| Small fix (L2) | ~150k | Worktree + verifier |
+| 无操作 | ~5k | 没有需要扫描的近期合并 |
+| 扫描 + 确定优先级 | ~40k | 合并列表 + TODO 扫描 |
+| 小型修复（L2） | ~150k | Git 工作树 + 验证者 |
 
-**Cadence**: 1d–6h · **Tier**: low · **Suggested daily cap**: 200k tokens
+**Cadence（运行节奏）**：1d–6h · **Tier（层级）**：low · **Suggested daily cap（建议的每日上限）**：200k tokens
 
 ```bash
 npx @cobusgreyling/loop-cost --pattern post-merge-cleanup --cadence 1d --level L1
 ```
 
-Run off-peak. Cap auto-PRs per day in `loop-budget.md`.
+在非高峰时段运行。在 `loop-budget.md` 中限制每天自动创建的 PR 数量。
 
-## Success Metrics
+<a id="success-metrics"></a>
 
-- Reduction in "we forgot to remove X after merge" incidents
-- Age of open post-merge cleanup items
-- % of cleanup PRs merged without review comments
+## Success Metrics（成功指标）
 
-Lower risk than CI sweeper — good second loop after daily triage is stable.
+- “合并后忘记移除 X”事件的减少程度
+- 待处理的合并后清理项目的存在时长
+- 未收到审查意见便合并的清理 PR 百分比
+
+与 CI sweeper 相比风险更低——适合在每日问题分诊稳定后作为第二个循环。
