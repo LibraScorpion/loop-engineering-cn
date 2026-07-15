@@ -1,86 +1,129 @@
-# Quickstart — 5 minutes to your first loop
+<a id="quickstart--5-minutes-to-your-first-loop"></a>
+# 快速入门——5 分钟启动你的第一个循环
 
-> **Stop prompting. Design the loop. Get a score.**
+> **别再反复写提示词。设计循环。获得评分。**
 
-Watch the score climb: [loop-audit-demo.gif](../assets/visuals/loop-audit-demo.gif) (10 → 70 → 100 in ~15s).
+观看评分一路攀升：[loop-audit-demo.gif](../assets/visuals/loop-audit-demo.gif)（约 15 秒内从 10 → 70 → 100）。
 
-Landed from [X](https://x.com), the [showcase](https://cobusgreyling.github.io/loop-engineering/), or a friend's README? This is the shortest path from zero to a running loop.
+从 [X](https://x.com)、[展示页](https://cobusgreyling.github.io/loop-engineering/)或朋友的 README 来到这里？这是从零开始运行循环的最短路径。
 
-**Week one rule:** report only. No auto-fix, no auto-merge. Read what the loop writes before you let it act.
+**第一周准则：** 仅报告。不要自动修复，也不要自动合并。先阅读循环写入的内容，再允许它执行操作。
 
-## 1. Pick your pain (30 seconds)
+## 一眼看懂：从空白配置到可控循环
 
-Not sure which loop? Use the [interactive pattern picker](https://cobusgreyling.github.io/loop-engineering/#interactive) on the showcase — it recommends a pattern, scaffold command, first `/loop` line, and a token estimate.
+```mermaid
+flowchart TD
+    A["1. 选择模式<br/>明确要重复处理的任务"] --> B["2. 初始化<br/>把循环文件补进已有仓库"]
+    B --> C["3. 估算成本<br/>确认运行频率与 token 用量"]
+    C --> D["4. 审计与同步<br/>检查就绪度和配置一致性"]
+    D --> E["5. 首次运行 L1<br/>仅生成报告并更新状态"]
+    E --> F["6. 人工检查<br/>纠正结果并提交状态"]
+    F --> G["后续升级<br/>逐步加入 L2 验证和 L3 无人值守运行"]
+```
 
-Or start with **Daily Triage** if you just want to learn loop discipline with low risk.
+各阶段会得到这些结果：
 
-## 2. Scaffold in your repo (60 seconds)
+- **选择模式：** 确定要解决的重复任务、使用的 pattern，以及承载循环的工具。
+- **初始化：** 在现有项目中得到状态、循环配置、预算、运行日志和相应技能等文件。
+- **估算成本：** 得到指定级别和执行频率下的 token 用量估算，用来调整频率或级别。
+- **审计与同步：** 得到就绪度评分、待补项建议，以及 `STATE.md` 与 `LOOP.md` 的一致性报告。
+- **首次运行 L1：** 只报告发现并更新状态，不修改业务代码。
+- **人工检查：** 人工确认优先级、修正误判，并提交脚手架和首次运行产生的状态更新。
+- **后续升级：** 在运行记录可信后，再加入验证器、隔离工作树、预算和人工审核关卡，逐步尝试 L2/L3。
 
-Run this in the root of any git project (no clone required):
+<a id="1-pick-your-pain-30-seconds"></a>
+## 1. 找出你的痛点（30 秒）
+
+不确定该选哪个循环？使用展示页上的[交互式模式选择器](https://cobusgreyling.github.io/loop-engineering/#interactive)——它会推荐一种模式、脚手架命令、第一行 `/loop` 指令以及 token 用量估算。
+
+如果只是想低风险地学习循环规范，也可以从 **Daily Triage** 开始。
+
+<a id="2-scaffold-in-your-repo-60-seconds"></a>
+## 2. 在当前仓库中初始化循环脚手架（60 秒）
+
+这里的“初始化循环脚手架”，是指在一个**已有的 Git 项目**中补齐 Loop Engineering 运行所需的状态、规则、预算、日志和工具配置。它不是生成应用功能或业务代码，也不需要先克隆 `loop-engineering` 仓库。
+
+进入任意 Git 项目的根目录并运行以下命令；末尾的 `.` 表示把文件写入当前项目：
 
 ```bash
 npx @cobusgreyling/loop-init . --pattern daily-triage --tool grok
 ```
 
-Swap `--pattern` for any pattern from [patterns/registry.yaml](../patterns/registry.yaml). List all patterns:
+以上面的 `daily-triage` 为例，典型文件的用途如下：
+
+| 文件 | 当前用途 |
+|------|----------|
+| `STATE.md` | 保存循环的当前状态，包括最近运行时间、高优先级事项、观察列表和本轮忽略的噪声；其他模式可能使用各自的状态文件名。 |
+| `LOOP.md` | 描述已启用循环的执行频率、当前级别或状态、人工审核关卡和预算等团队配置。 |
+| `loop-budget.md` | 记录所选模式的每日运行次数、token 和子智能体数量上限，以及超出预算后的处理方式和紧急停止开关。 |
+| `loop-run-log.md` | 提供仅追加的运行记录格式，用来记录每次运行的模式、耗时、发现项、采取的操作、升级次数、token 估算和结果。 |
+
+因此，这一步的产出是一套可检查、可审计的“循环运行配置”；你的项目源代码和业务实现仍由原来的开发流程管理。
+
+可将 `--pattern` 替换为 [patterns/registry.yaml](../patterns/registry.yaml) 中的任意模式。列出所有模式：
 
 ```bash
 npx @cobusgreyling/loop-init --help
 ```
 
-### Which `--tool` values work?
+<a id="which---tool-values-work"></a>
+### 可以使用哪些 `--tool` 值？
 
-| `--tool` value | Scaffolded by `loop-init`? | Notes |
+| `--tool` 值 | `loop-init` 是否支持脚手架生成？ | 说明 |
 |----------------|---------------------------|-------|
-| `grok` | Yes (default) | Native `/loop` scheduling |
-| `claude` | Yes | Native `/loop` + `$skill` invocation |
-| `codex` | Yes | Automations tab for scheduling |
-| `opencode` | Yes | Cron/systemd + `opencode run` |
-| `cursor` | No — manual copy | Copy skills + `STATE.md`; use Automations — see [examples/cursor/](../examples/cursor/) |
-| `windsurf` | No — manual copy | Copy skills + `STATE.md`; use Workflows — see [examples/windsurf/](../examples/windsurf/) |
-| `openclaw` | No — manual copy | Copy `skills/` + `STATE.md`; use `openclaw cron` — see [examples/openclaw/](../examples/openclaw/) |
+| `grok` | 是（默认） | 原生 `/loop` 调度 |
+| `claude` | 是 | 原生 `/loop` + `$skill` 调用 |
+| `codex` | 是 | 通过 Automations 选项卡调度 |
+| `opencode` | 是 | Cron/systemd + `opencode run` |
+| `cursor` | 否——需手动复制 | 复制技能 + `STATE.md`；使用 Automations——参见 [examples/cursor/](../examples/cursor/) |
+| `windsurf` | 否——需手动复制 | 复制技能 + `STATE.md`；使用 Workflows——参见 [examples/windsurf/](../examples/windsurf/) |
+| `openclaw` | 否——需手动复制 | 复制 `skills/` + `STATE.md`；使用 `openclaw cron`——参见 [examples/openclaw/](../examples/openclaw/) |
 
-`loop-init` copies the starter kit, creates `STATE.md`, `LOOP.md`, `loop-budget.md`, and `loop-run-log.md`, then **prints your Loop Ready score** and first command.
+`loop-init` 会复制起步套件，创建 `STATE.md`、`LOOP.md`、`loop-budget.md` 和 `loop-run-log.md`，随后**打印你的 Loop Ready 评分**和第一条命令。
 
-## 3. Check cost before you schedule (30 seconds)
+<a id="3-check-cost-before-you-schedule-30-seconds"></a>
+## 3. 调度前检查成本（30 秒）
 
 ```bash
 npx @cobusgreyling/loop-cost --pattern daily-triage --level L1 --cadence 1d
 ```
 
-Adjust `--pattern`, `--level` (L1 → L2 → L3), and `--cadence` to match what you plan to run. High-frequency loops (CI Sweeper at 5m) can burn tokens fast — slow the cadence or require early-exit triage first.
+根据计划运行的内容调整 `--pattern`、`--level`（L1 → L2 → L3）和 `--cadence`。高频循环（例如每 5m 运行一次的 CI Sweeper）可能快速消耗 token——请降低执行频率，或要求先进行可提前退出的问题分诊。
 
-### Circuit breaker for L2+ loops (optional)
+<a id="circuit-breaker-for-l2-loops-optional"></a>
+### L2+ 循环的熔断器（可选）
 
-When a loop starts fixing code unattended, wire a **circuit breaker** so it escalates instead of retrying the same failure forever. `loop-init` scaffolds `loop-ledger.json` and a `loop-guard` skill for fix-capable patterns; check the ledger before each retry:
+当循环开始无人值守地修复代码时，请接入**熔断器**，使其升级处理，而不是无休止地重试同一故障。对于能够执行修复的模式，`loop-init` 会生成 `loop-ledger.json` 和 `loop-guard` 技能的脚手架；每次重试前都应检查账本：
 
 ```bash
 npx @cobusgreyling/loop-context --check --ledger loop-ledger.json
 ```
 
-Exit `0` = continue · `2` = escalate to a human. The breaker trips on max iterations, the same error repeating N× in a row, too many consecutive failures, or a token budget cap. Full API: [tools/loop-context/README.md](../tools/loop-context/README.md).
+退出码 `0` = 继续 · `2` = 升级给人工处理。达到最大迭代次数、同一错误连续出现 N×、连续失败次数过多或触及 token 预算上限时，都会触发熔断器。完整 API：[tools/loop-context/README.md](../tools/loop-context/README.md)。
 
-## 4. Audit readiness (30 seconds)
+<a id="4-audit-readiness-30-seconds"></a>
+## 4. 审计就绪度（30 秒）
 
 ```bash
 npx @cobusgreyling/loop-audit . --suggest
 ```
 
-Scores 0–100 with concrete next steps. Re-run after each improvement. Paste a badge when you're proud of the score:
+评分范围为 0–100，并提供具体的后续步骤。每次改进后重新运行。当你对评分满意时，可以添加徽章：
 
 ```bash
 npx @cobusgreyling/loop-audit . --badge
 ```
 
-### Catch drift before you schedule (`loop-sync`)
+<a id="catch-drift-before-you-schedule-loop-sync"></a>
+### 调度前发现配置漂移（`loop-sync`）
 
-`loop-audit` scores readiness; `loop-sync` checks that your `STATE.md` and `LOOP.md` still agree. When they drift — you edit `LOOP.md` to add a loop but never wire it into `STATE.md`, or a starter update leaves one file behind — a scheduled loop can run against stale instructions.
+`loop-audit` 评估就绪度；`loop-sync` 检查 `STATE.md` 与 `LOOP.md` 是否仍然一致。当二者出现漂移时——例如，你编辑 `LOOP.md` 添加了循环，却从未将其接入 `STATE.md`；或者起步套件更新时遗漏了某个文件——调度的循环可能会依据过时指令运行。
 
 ```bash
 npx @cobusgreyling/loop-sync .
 ```
 
-Sample output on a fresh daily-triage scaffold:
+以下是刚生成的 daily-triage 脚手架的示例输出：
 
 ```
 Loop Sync Report
@@ -97,32 +140,36 @@ Found 2 issue(s):
    - Review STATE.md and LOOP.md for consistency
 ```
 
-Read it top-down: the **score** (70+ healthy, 40–69 warning, below 40 needs attention) is the headline, then each **warning** names the two files that disagree and how. Here, `LOOP.md` describes loops that never point back at `STATE.md` — expected right after scaffolding, worth fixing once you customize either file.
+从上往下阅读：首先关注**评分**（70+ 为健康，40–69 为警告，低于 40 则需要处理），随后每条**警告**都会指出哪两个文件不一致，以及不一致之处。在这个示例中，`LOOP.md` 描述的循环从未回指 `STATE.md`——脚手架刚生成时出现这种情况属于预期，但自定义任一文件后就值得修复。
 
-**When to run it:** after editing `LOOP.md`, and again before you schedule an L2 loop — so an unattended run never fires on stale state. Full checks, options, and score bands: [tools/loop-sync/README.md](../tools/loop-sync/README.md).
+**运行时机：** 编辑 `LOOP.md` 后运行一次，并在调度 L2 循环前再次运行——这样，无人值守的任务就不会基于过时状态启动。完整检查项、选项和评分区间：[tools/loop-sync/README.md](../tools/loop-sync/README.md)。
 
-### Optional: MCP runtime lookup
+<a id="optional-mcp-runtime-lookup"></a>
+### 可选：MCP 运行时查询
 
-Agents can query patterns, skills, and state on demand instead of stuffing docs into every prompt. Copy the config stub from [examples/mcp/loop-engineering.mcp.json](../examples/mcp/loop-engineering.mcp.json) into your MCP client settings.
+智能体可以按需查询模式、技能和状态，无需将文档塞进每个提示词。将 [examples/mcp/loop-engineering.mcp.json](../examples/mcp/loop-engineering.mcp.json) 中的配置存根复制到 MCP 客户端设置中。
 
-Run the server from npm (no clone required):
+从 npm 运行服务器（无需克隆）：
 
 ```bash
 LOOP_PROJECT_ROOT=. npx @cobusgreyling/loop-mcp-server
 ```
 
-Or from a cloned `loop-engineering` repo for local development:
+或者从已克隆的 `loop-engineering` 仓库运行，以便进行本地开发：
 
 ```bash
 cd path/to/loop-engineering/tools/mcp-server && npm ci && npm run build
 LOOP_PROJECT_ROOT=/path/to/your/project node dist/index.js
 ```
 
-See [tools/mcp-server/README.md](../tools/mcp-server/README.md) for resources and tools.
+有关资源和工具，请参阅 [tools/mcp-server/README.md](../tools/mcp-server/README.md)。
 
-## 5. Run your first loop — report only (2 minutes)
+<a id="5-run-your-first-loop--report-only-2-minutes"></a>
+## 5. 运行你的第一个循环——仅报告（2 分钟）
 
 ### Grok
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```bash
 /loop 1d Run loop-triage. Update STATE.md. No auto-fix in week one.
@@ -130,17 +177,19 @@ See [tools/mcp-server/README.md](../tools/mcp-server/README.md) for resources an
 
 ### Claude Code
 
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
+
 ```bash
 /loop 1d Run $loop-triage. Read STATE.md. Merge findings into High Priority and Watch List. Update Last run. Do not edit code.
 ```
 
 ### Codex
 
-Use the first-run command printed by `loop-init` (pattern-specific). Week one: triage and state updates only.
+使用 `loop-init` 打印的首次运行命令（针对具体模式）。第一周仅执行问题分诊和状态更新。
 
 ### OpenClaw
 
-No `loop-init --tool openclaw` yet — copy `skills/loop-triage/SKILL.md` and `STATE.md`, then create an isolated cron job. See [examples/openclaw/daily-triage.md](../examples/openclaw/daily-triage.md).
+目前尚不支持 `loop-init --tool openclaw`——请复制 `skills/loop-triage/SKILL.md` 和 `STATE.md`，再创建隔离的 cron 作业。参见 [examples/openclaw/daily-triage.md](../examples/openclaw/daily-triage.md)。
 
 ### Opencode
 
@@ -148,107 +197,115 @@ No `loop-init --tool openclaw` yet — copy `skills/loop-triage/SKILL.md` and `S
 npx @cobusgreyling/loop-init . --pattern daily-triage --tool opencode
 ```
 
-Then schedule with cron or systemd — each tick runs headless via `opencode run`:
+然后使用 cron 或 systemd 进行调度——每次触发都会通过 `opencode run` 以无头模式运行：
+
+> 中文说明：以下为供智能体执行的原始英文指令，为避免语义漂移保持不变
 
 ```bash
 opencode run "Run loop-triage. Read STATE.md first. Update High Priority and Watch List. No auto-fix in week one." --agent loop-triage
 ```
 
-See [examples/opencode/daily-triage.md](../examples/opencode/daily-triage.md) for worktree + verifier patterns (L2+).
+有关 Git 工作树 + 验证器模式（L2+），请参阅 [examples/opencode/daily-triage.md](../examples/opencode/daily-triage.md)。
 
 ### Hermes
 
-No `loop-init --tool hermes` yet — install the `loop-triage` skill manually and schedule via `hermes cron`. See [examples/hermes/daily-triage.md](../examples/hermes/daily-triage.md) for setup, channel delivery, and the full command reference.
+目前尚不支持 `loop-init --tool hermes`——请手动安装 `loop-triage` 技能，并通过 `hermes cron` 调度。有关设置、频道交付和完整命令参考，请参阅 [examples/hermes/daily-triage.md](../examples/hermes/daily-triage.md)。
 
-Week one: use `--deliver local` so routine triage output stays out of your chat history until you trust it.
+第一周请使用 `--deliver local`，让常规问题分诊输出暂不进入聊天记录，直到你信任它为止。
 
 ### Cursor
 
-No `loop-init --tool cursor` yet — copy skills and state from any starter, then map scheduling to editor Automations. See [examples/cursor/daily-triage.md](../examples/cursor/daily-triage.md).
+目前尚不支持 `loop-init --tool cursor`——请从任一起步套件复制技能和状态，再将调度映射到编辑器的 Automations。参见 [examples/cursor/daily-triage.md](../examples/cursor/daily-triage.md)。
 
 ### Windsurf
 
-No `loop-init --tool windsurf` yet — copy skills and state from any starter, then map scheduling to a Cascade Workflow. See [examples/windsurf/daily-triage.md](../examples/windsurf/daily-triage.md).
+目前尚不支持 `loop-init --tool windsurf`——请从任一起步套件复制技能和状态，再将调度映射到 Cascade Workflow。参见 [examples/windsurf/daily-triage.md](../examples/windsurf/daily-triage.md)。
 
-### GitHub Actions only
+<a id="github-actions-only"></a>
+### 仅使用 GitHub Actions
 
-Workflow examples under [examples/github-actions/](../examples/github-actions/) are schema-complete; you wire the agent invocation (Codex API, `repository_dispatch`, etc.). Start with report-only outputs to a state file or issue comment.
+[examples/github-actions/](../examples/github-actions/) 中的工作流示例具有完整的 schema；你需要接入智能体调用（Codex API、`repository_dispatch` 等）。起步阶段应仅将报告输出到状态文件或 Issue 评论。
 
-## 6. Read the output, commit state (1 minute)
+<a id="6-read-the-output-commit-state-1-minute"></a>
+## 6. 阅读输出并提交状态（1 分钟）
 
-Open `STATE.md`. Did the loop capture real priorities? Edit anything wrong — you're still the engineer.
+打开 `STATE.md`。循环是否捕捉到了真正的优先事项？发现错误就进行修改——你依然是工程师。
 
-Commit the scaffold + first run update so `loop-audit` sees activity on the next audit.
+提交脚手架和首次运行更新，使 `loop-audit` 能在下一次审计时发现活动记录。
 
-## What next?
+<a id="what-next"></a>
+## 接下来做什么？
 
-| When | Do this |
+| 时机 | 操作 |
 |------|---------|
-| End of week one | Re-run `loop-audit . --suggest` — aim for L1 (score ~40+) |
-| Week two | Add a verifier skill; try one assisted fix in a worktree (L2) — see [loop-worktree](#l2-isolated-fix-attempts-loop-worktree) below |
-| Before unattended (L3) | `loop-budget.md` + `loop-run-log.md` filled, human gates in `LOOP.md`, proven runs |
-| Unsure which pattern | [pattern-picker.md](./pattern-picker.md) · [loop-design-checklist.md](./loop-design-checklist.md) |
-| Something broke | [failure-modes.md](./failure-modes.md) · [stories/](../stories/) |
+| 第一周结束时 | 重新运行 `loop-audit . --suggest`——以 L1（评分约 40+）为目标 |
+| 第二周 | 添加验证器技能；在 Git 工作树中尝试一次辅助修复（L2）——参见下文的 [loop-worktree](#l2-isolated-fix-attempts-loop-worktree) |
+| 无人值守运行前（L3） | 填写 `loop-budget.md` + `loop-run-log.md`，在 `LOOP.md` 中设置人工审核关卡，并积累经过验证的运行记录 |
+| 不确定选择哪种模式 | [模式选择器](./pattern-picker.md) · [循环设计检查清单](./loop-design-checklist.md) |
+| 出现故障 | [失效模式](./failure-modes.md) · [案例故事](../stories/) |
 
-### L2: isolated fix attempts (`loop-worktree`)
+<a id="l2-isolated-fix-attempts-loop-worktree"></a>
+### L2：隔离的修复尝试（`loop-worktree`）
 
-PR Babysitter and CI Sweeper need **one git worktree per fix attempt** so retries don't collide on the same branch. `loop-worktree` tracks them in a manifest and sweeps rejected attempts.
+PR Babysitter 和 CI Sweeper 需要**每次修复尝试使用一个 Git 工作树**，避免重试在同一分支上发生冲突。`loop-worktree` 会在清单中跟踪这些工作树，并清理被拒绝的尝试。
 
 ```bash
-# Create an isolated worktree for one fix attempt
+# 为一次修复尝试创建隔离的 Git 工作树
 npx @cobusgreyling/loop-worktree create --run-id pr-217-fix-1 --pattern pr-babysitter
 
-# Run your fix in the worktree path printed by create, then verifier...
+# 在 create 打印的 Git 工作树路径中运行修复，然后运行验证器……
 
-# Verifier rejected — mark for cleanup (audit trail only)
+# 验证器拒绝——标记为待清理（仅保留审计记录）
 npx @cobusgreyling/loop-worktree mark --run-id pr-217-fix-1 --status rejected
 
-# Sweep rejected/escalated worktrees older than 24h
+# 清理超过 24h 的 rejected/escalated Git 工作树
 npx @cobusgreyling/loop-worktree cleanup --older-than 24h
 
-# List active worktrees
+# 列出活跃的 Git 工作树
 npx @cobusgreyling/loop-worktree list
 ```
 
-Pair with the [circuit breaker](#circuit-breaker-for-l2-loops-optional) above: when `loop-context --check` exits `2`, mark the worktree `escalated` before handing off to a human. The two tools stay independent — see [tools/loop-worktree/README.md](../tools/loop-worktree/README.md).
+将其与上文的[熔断器](#circuit-breaker-for-l2-loops-optional)配合使用：当 `loop-context --check` 以退出码 `2` 结束时，先将 Git 工作树标记为 `escalated`，再移交给人工处理。这两个工具彼此独立——参见 [tools/loop-worktree/README.md](../tools/loop-worktree/README.md)。
 
-## Copy-paste cheat sheet
+<a id="copy-paste-cheat-sheet"></a>
+## 复制粘贴速查表
 
 ```bash
-# Scaffold — --tool accepts: grok | claude | codex | opencode
-# (cursor, windsurf, openclaw: manual copy — see table in section 2)
+# 脚手架生成——--tool 接受：grok | claude | codex | opencode
+# （cursor、windsurf、openclaw：需手动复制——参见第 2 节表格）
 npx @cobusgreyling/loop-init . --pattern daily-triage --tool grok
 
-# List patterns and flags
+# 列出模式和选项
 npx @cobusgreyling/loop-init --help
 
-# Cost check
+# 成本检查
 npx @cobusgreyling/loop-cost --pattern daily-triage --level L1 --cadence 1d
 
-# Audit + suggestions
+# 审计 + 建议
 npx @cobusgreyling/loop-audit . --suggest
 
-# Optional badge for your README
+# 可选：在 README 中添加徽章
 npx @cobusgreyling/loop-audit . --badge
 
-# Check STATE.md ↔ LOOP.md drift (run after editing LOOP.md, before scheduling L2)
+# 检查 STATE.md ↔ LOOP.md 漂移（编辑 LOOP.md 后、调度 L2 前运行）
 npx @cobusgreyling/loop-sync .
 
-# Optional MCP runtime lookup (patterns, skills, state on demand)
+# 可选：MCP 运行时查询（按需查询模式、技能和状态）
 LOOP_PROJECT_ROOT=. npx @cobusgreyling/loop-mcp-server
 
-# L2: isolated worktree per fix attempt (PR Babysitter, CI Sweeper)
+# L2：每次修复尝试使用一个隔离的 Git 工作树（PR Babysitter、CI Sweeper）
 npx @cobusgreyling/loop-worktree create --run-id <id> --pattern <pattern>
 npx @cobusgreyling/loop-worktree mark --run-id <id> --status rejected
 npx @cobusgreyling/loop-worktree cleanup --older-than 24h
 ```
 
-## Learn the why (optional, 10 minutes)
+<a id="learn-the-why-optional-10-minutes"></a>
+## 了解背后的原理（可选，10 分钟）
 
-- [Loop Engineering essay](https://cobusgreyling.substack.com/p/loop-engineering) — concept and primitives
-- [Primitives matrix](./primitives-matrix.md) — Grok vs Claude vs Codex vs OpenClaw vs Opencode vs Cursor
-- [Operating loops](./operating-loops.md) — when to kill a loop
+- [Loop Engineering 文章](https://cobusgreyling.substack.com/p/loop-engineering)——概念与原语
+- [原语矩阵](./primitives-matrix.md)——Grok vs Claude vs Codex vs OpenClaw vs Opencode vs Cursor
+- [运行循环](./operating-loops.md)——何时停止循环
 
 ---
 
-*Questions? [GitHub Discussions](https://github.com/cobusgreyling/loop-engineering/discussions) · Share your setup via [Add Adopter](https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml)*
+*有问题？前往 [GitHub Discussions](https://github.com/cobusgreyling/loop-engineering/discussions) · 通过 [Add Adopter](https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml) 分享你的设置*

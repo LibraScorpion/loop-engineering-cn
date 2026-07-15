@@ -1,27 +1,27 @@
 ---
-name: Pattern request
-about: Suggest a new reusable loop pattern with production potential
+name: 模式请求
+about: 建议一种具有生产应用潜力、可复用的新循环模式
 labels: pattern-request
 ---
 
-**Pattern name idea**: 
+**模式名称构想**：
 
-**What problem does it solve?** (one paragraph)
+**它解决什么问题？**（一段话）
 
-**Typical cadence**: 
+**典型运行节奏**：
 
-**Risk level** (low / medium / high):
+**风险等级**（低 / 中 / 高）：
 
-**Target tools** (Grok / Claude Code / Codex / GitHub Actions / other):
+**目标工具**（Grok / Claude Code / Codex / GitHub Actions / 其他）：
 
-**Why this belongs in the reference** (real usage or strong signal from others):
+**为什么它应纳入本参考项目？**（已有实际使用，或获得其他用户的强烈需求信号）：
 
-**Proposed skills** (triage, fix, verify...):
+**建议使用的技能**（分诊、修复、验证……）：
 
-**Human gates you expect**:
+**预期的人工审核关卡**：
 
-**Any existing starter code or notes** (links, private repo redacted examples):
+**已有的起始模板代码或说明**（链接、来自私有仓库且已脱敏的示例）：
 
 ---
 
-*We will turn accepted requests into full `patterns/*.md` + `registry.yaml` entry + starter + at least one story following the template.*
+*我们会将接受的请求整理为完整的 `patterns/*.md`、`registry.yaml` 条目、起始模板，以及至少一篇遵循模板的案例。*

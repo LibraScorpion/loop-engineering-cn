@@ -1,27 +1,27 @@
 ---
-name: Bug report (for the reference, starters, loop-audit, or docs)
-about: Something is broken, inaccurate, or the audit gives wrong results
+name: 缺陷报告（适用于参考仓库、入门模板、loop-audit 或文档）
+about: 某项内容无法正常工作、表述不准确，或审计结果有误
 labels: bug
 ---
 
-**Describe the bug**:
+**请描述缺陷**：
 
-**Steps to reproduce**:
+**复现步骤**：
 1. 
 2. 
 
-**Expected behavior**:
+**预期行为**：
 
-**Actual behavior** (include output of `loop-audit --json` or command if relevant):
+**实际行为**（如果相关，请附上 `loop-audit --json` 或其他命令的输出）：
 
-**Environment**:
-- OS:
-- Node (for audit):
-- Tool used (Grok / Claude / Codex / GH Actions):
-- Target repo (if not this one):
+**环境**：
+- 操作系统：
+- Node（用于审计）：
+- 使用的工具（Grok / Claude / Codex / GH Actions）：
+- 目标仓库（如果不是本仓库）：
 
-**Additional context** (links to patterns, commits, screenshots):
+**补充信息**（模式、提交或截图的链接）：
 
 ---
 
-*If this is a pattern or safety issue, please also reference `docs/safety.md` or `docs/failure-modes.md`.*
+*如果这是模式或安全问题，请同时引用 `docs/safety.md` 或 `docs/failure-modes.md`。*

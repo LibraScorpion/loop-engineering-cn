@@ -1,27 +1,33 @@
 # @cobusgreyling/loop-mcp-server
 
-MCP (Model Context Protocol) server for **loop-engineering** — exposes patterns, skills, state, budget, and audit tools as runtime-queryable resources for AI agents.
+面向 **loop-engineering** 的 MCP（Model Context Protocol）服务——将模式、技能、状态、预算和审计工具公开为 AI 智能体可在运行时查询的资源。
 
-Instead of stuffing all loop documentation into the prompt, agents can query only what they need on-demand via MCP.
+无需将所有循环文档都塞进提示词，智能体可以通过 MCP 按需查询所需内容。
 
-## Quick Start
+<a id="quick-start"></a>
+
+## 快速开始
 
 ```bash
 npx @cobusgreyling/loop-mcp-server
 ```
 
-From a cloned `loop-engineering` repo:
+在已克隆的 `loop-engineering` 仓库中：
 
 ```bash
 cd tools/mcp-server && npm ci && npm test
 node dist/index.js
 ```
 
-Set `LOOP_PROJECT_ROOT` to your target project (defaults to `cwd`).
+将 `LOOP_PROJECT_ROOT` 设置为目标项目（默认为 `cwd`）。
 
-### Configure in Claude Code / Grok / any MCP client
+<a id="configure-in-claude-code--grok--any-mcp-client"></a>
 
-Add to your MCP config (`.mcp.json` or equivalent):
+### 在 Claude Code、Grok 或任意 MCP 客户端中配置
+
+将以下内容添加到 MCP 配置（`.mcp.json` 或同等配置文件）中：
+
+> 中文说明：以下 JSON 是机器可读的 MCP 客户端配置，其 key、命令、参数、包名、路径和环境变量保持英文原文。
 
 ```json
 {
@@ -37,39 +43,47 @@ Add to your MCP config (`.mcp.json` or equivalent):
 }
 ```
 
-## Resources
+<a id="resources"></a>
 
-| URI | Description |
+## 资源
+
+| URI | 说明 |
 |-----|-------------|
-| `loop://registry` | Pattern registry (all 7 patterns with metadata, costs, phases) |
-| `loop://config` | LOOP.md — cadence, budget, gates, scheduling |
-| `loop://budget` | loop-budget.md — token caps, kill switch |
-| `loop://run-log` | loop-run-log.md — append-only run history |
-| `loop://safety` | Safety docs — denylists, auto-merge policy, MCP scopes |
-| `loop://patterns/{id}` | Full pattern documentation by ID |
-| `loop://skills/{name}` | Skill definition (SKILL.md) by name |
-| `loop://state/{file}` | State file content |
+| `loop://registry` | 模式注册表（全部 7 个模式及其元数据、成本和阶段） |
+| `loop://config` | LOOP.md——运行节奏、预算、关卡和调度 |
+| `loop://budget` | loop-budget.md——token 上限和紧急停止开关 |
+| `loop://run-log` | loop-run-log.md——仅追加的运行历史记录 |
+| `loop://safety` | 安全文档——拒绝列表、自动合并策略和 MCP 权限范围 |
+| `loop://patterns/{id}` | 按 ID 获取完整的模式文档 |
+| `loop://skills/{name}` | 按名称获取技能定义（SKILL.md） |
+| `loop://state/{file}` | 状态文件内容 |
 
-## Tools
+<a id="tools"></a>
 
-| Tool | Description |
+## 工具
+
+| 工具 | 说明 |
 |------|-------------|
-| `loop_list_patterns` | List all patterns with goals, cadences, risk levels |
-| `loop_list_skills` | List available skills with locations |
-| `loop_list_state_files` | List state files in the project |
-| `loop_get_pattern` | Get full pattern docs + registry metadata |
-| `loop_get_skill` | Get SKILL.md content for a named skill |
-| `loop_get_state` | Read a state file for current loop status |
-| `loop_recommend_pattern` | Recommend patterns for a use case description |
-| `loop_estimate_cost` | Estimate daily token cost for a pattern at L1/L2/L3 |
+| `loop_list_patterns` | 列出所有模式及其目标、运行节奏和风险等级 |
+| `loop_list_skills` | 列出可用技能及其位置 |
+| `loop_list_state_files` | 列出项目中的状态文件 |
+| `loop_get_pattern` | 获取完整的模式文档和注册表元数据 |
+| `loop_get_skill` | 获取指定技能的 SKILL.md 内容 |
+| `loop_get_state` | 读取状态文件，以了解当前循环状态 |
+| `loop_recommend_pattern` | 根据用例描述推荐模式 |
+| `loop_estimate_cost` | 估算某个模式在 L1/L2/L3 下的每日 token 成本 |
 
-## Environment
+<a id="environment"></a>
 
-| Variable | Default | Description |
+## 环境
+
+| 变量 | 默认值 | 说明 |
 |----------|---------|-------------|
-| `LOOP_PROJECT_ROOT` | `cwd()` | Root directory of the project to serve |
+| `LOOP_PROJECT_ROOT` | `cwd()` | 要提供服务的项目根目录 |
 
-## Development
+<a id="development"></a>
+
+## 开发
 
 ```bash
 cd tools/mcp-server
@@ -78,27 +92,31 @@ npm run build
 npm test
 ```
 
-## Architecture
+<a id="architecture"></a>
+
+## 架构
 
 ```
-Agent (Claude Code / Grok / Codex)
+智能体（Claude Code / Grok / Codex）
   │
-  ├─ MCP Resource Read ──→ loop://patterns/daily-triage
-  ├─ MCP Tool Call ──→ loop_recommend_pattern("watch CI failures")
-  └─ MCP Tool Call ──→ loop_estimate_cost("ci-sweeper", "L2")
+  ├─ MCP 资源读取 ──→ loop://patterns/daily-triage
+  ├─ MCP 工具调用 ──→ loop_recommend_pattern("watch CI failures")
+  └─ MCP 工具调用 ──→ loop_estimate_cost("ci-sweeper", "L2")
   │
   ▼
-loop-mcp-server (stdio transport)
+loop-mcp-server（stdio 传输）
   │
-  ├─ resolver.ts ──→ reads patterns/, skills/, STATE.md, LOOP.md, etc.
-  └─ index.ts ──→ MCP protocol handlers
+  ├─ resolver.ts ──→ 读取 patterns/、skills/、STATE.md、LOOP.md 等
+  └─ index.ts ──→ MCP 协议处理程序
 ```
 
-The server reads from the local filesystem at `LOOP_PROJECT_ROOT`. It is read-only — it never writes to the project.
+服务从 `LOOP_PROJECT_ROOT` 指定的本地文件系统读取内容。它是只读的，绝不会写入项目。
 
-## See Also
+<a id="see-also"></a>
 
-- [Loop Engineering Patterns](../../patterns/)
-- [MCP Examples](../../examples/mcp/)
-- [Primitives: Plugins & Connectors](../../docs/primitives.md)
-- [Safety: MCP Least Privilege](../../docs/safety.md)
+## 另请参阅
+
+- [Loop Engineering 模式](../../patterns/)
+- [MCP 示例](../../examples/mcp/)
+- [原语：插件与连接器](../../docs/primitives.md)
+- [安全：MCP 最小权限](../../docs/safety.md)

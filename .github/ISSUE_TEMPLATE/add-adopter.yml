@@ -1,20 +1,20 @@
-name: Add my project to Adopters
-description: List your loop setup on the showcase and docs/adopters.md
-title: "Adopter: "
+name: 将我的项目添加到采用者列表
+description: 在展示页和 docs/adopters.md 中列出你的循环配置
+title: "采用者："
 labels:
   - docs
 body:
   - type: markdown
     value: |
-      Share how you run loops from this repo (or an adaptation). We'll add your project to [docs/adopters.md](https://github.com/cobusgreyling/loop-engineering/blob/main/docs/adopters.md) and the [showcase adopters wall](https://cobusgreyling.github.io/loop-engineering/#adopters).
+      请分享你如何运行本仓库中的循环（或其改编版本）。我们会将你的项目添加到 [docs/adopters.md](https://github.com/cobusgreyling/loop-engineering/blob/main/docs/adopters.md) 和[展示页采用者墙](https://cobusgreyling.github.io/loop-engineering/#adopters)。
 
-      **Optional:** paste your Loop Ready badge from `npx @cobusgreyling/loop-audit . --badge`.
+      **可选：** 粘贴由 `npx @cobusgreyling/loop-audit . --badge` 生成的 Loop Ready 徽章。
 
   - type: input
     id: project
     attributes:
-      label: Project
-      description: Repo URL or product name
+      label: 项目
+      description: 仓库 URL 或产品名称
       placeholder: https://github.com/you/your-repo
     validations:
       required: true
@@ -22,8 +22,8 @@ body:
   - type: input
     id: patterns
     attributes:
-      label: Pattern(s)
-      description: e.g. Daily Triage + Issue Triage
+      label: 模式
+      description: 例如每日问题分诊 + Issue 问题分诊
       placeholder: daily-triage, issue-triage
     validations:
       required: true
@@ -31,7 +31,7 @@ body:
   - type: dropdown
     id: tool
     attributes:
-      label: Primary tool
+      label: 主要工具
       options:
         - Grok
         - Claude Code
@@ -46,7 +46,7 @@ body:
   - type: dropdown
     id: level
     attributes:
-      label: Readiness level (honest)
+      label: 就绪度等级（请如实选择）
       options:
         - L1
         - L2
@@ -57,16 +57,16 @@ body:
   - type: textarea
     id: notes
     attributes:
-      label: One-line notes
-      description: What worked or what broke — failures welcome
-      placeholder: L1 daily triage for 2 weeks; killed CI sweeper after token spike
+      label: 一句话说明
+      description: 哪些做法有效、哪些环节失败——也欢迎分享失败经验
+      placeholder: 使用 L1 每日问题分诊 2 周；token 用量突增后停用了 CI 清扫循环
     validations:
       required: true
 
   - type: textarea
     id: badge
     attributes:
-      label: Loop Ready badge (optional)
-      description: Output of `npx @cobusgreyling/loop-audit . --badge`
+      label: Loop Ready 徽章（可选）
+      description: "`npx @cobusgreyling/loop-audit . --badge` 的输出"
       render: text
       placeholder: "[![Loop Ready L2 (58/100)](...)](...)"

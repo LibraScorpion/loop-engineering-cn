@@ -1,25 +1,25 @@
 ---
-name: Share a production story (wins or failures)
-about: Real-world loop engineering experience. Failures and surprises are first-class.
+name: 分享生产环境故事（成功或失败）
+about: 分享真实的循环工程经验。失败和意外同样重要。
 labels: story
 ---
 
-**Pattern(s) used**:
+**使用的模式（pattern）**：
 
-**Context** (team size, tools, repo(s), what you were trying to automate):
+**背景**（团队规模、工具、仓库，以及你尝试自动化的内容）：
 
-**What worked**:
+**哪些做法有效**：
 
-**What broke or surprised you** (required — honest failures make the reference valuable):
+**哪些地方失败了或出乎意料**（必填——坦诚记录失败，才能让参考资料更有价值）：
 
-**Metrics or qualitative outcome** (time saved, PRs merged, incidents avoided, tokens burned, etc.):
+**量化指标或定性结果**（节省的时间、合并的 PR、避免的事故、token 用量等）：
 
-**Actionable lesson** (one crisp paragraph others can apply):
+**可执行的经验**（用一段简洁文字说明其他人可以直接借鉴的做法）：
 
-**Would you run this unattended today?** (L1 / L2 / L3 and why):
+**你今天会让它无人值守运行吗？**（L1 / L2 / L3，以及原因）：
 
-**Artifacts you can share** (redacted state snippets, skill text, workflow yml, screenshots — attach or paste):
+**可以分享的资料**（已脱敏的状态片段、技能文本、工作流 yml、截图——请附加或粘贴）：
 
 ---
 
-Thank you. These stories are the most valuable part of the project.
+感谢分享。这些故事是本项目最宝贵的内容。

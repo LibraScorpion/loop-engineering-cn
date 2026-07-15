@@ -1,51 +1,63 @@
-# Adopters & community setups
+<a id="adopters--community-setups"></a>
 
-Forks and stars mean people are trying this in their own stacks. If you run a loop from this repo (or adapted from it), add yourself here via PR.
+# 采用者与社区配置
 
-**Pinned:** [Add your project — Loop Ready badge + adopters list](https://github.com/cobusgreyling/loop-engineering/discussions/92) (Discussions)
+Fork 和 star 意味着有人正在自己的技术栈中尝试本项目。如果你运行了本仓库中的某个循环（或基于它改编的循环），请通过 PR 将你自己添加到这里。
 
-## Loop Ready badge
+**置顶：** [添加你的项目 —— Loop Ready 徽章与采用者列表](https://github.com/cobusgreyling/loop-engineering/discussions/92)（GitHub Discussions）
 
-Show your readiness level in your README:
+<a id="loop-ready-badge"></a>
+
+## Loop Ready 徽章
+
+在 README 中展示你的就绪度级别：
+
+> 中文说明：以下为可直接运行的原始命令，为避免语义偏差保持不变
 
 ```bash
 npx @cobusgreyling/loop-audit . --badge
 ```
 
-Paste the markdown output into your README. Re-run after you graduate L1 → L2 → L3.
+将输出的 Markdown 粘贴到你的 README 中。当你从 L1 升级到 L2、再到 L3 后，请重新运行该命令。
 
-## How to list your project
+<a id="how-to-list-your-project"></a>
 
-**Fast path:** [open the Add Adopter issue](https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml) — we'll add your row.
+## 如何列出你的项目
 
-Or open a PR that adds a row to the table below:
+**快捷方式：** [创建“采用者登记”Issue](https://github.com/cobusgreyling/loop-engineering/issues/new?template=add-adopter.yml) —— 我们会把你的信息添加到表格中。
 
-| Field | What to include |
+你也可以创建 PR，在下表中添加一行：
+
+| 字段 | 应包含的内容 |
 |-------|-----------------|
-| **Project** | Repo link or product name |
-| **Pattern(s)** | e.g. Daily Triage + Issue Triage |
-| **Tool** | Grok, Claude Code, Codex, Cursor, Windsurf, GitHub Actions, mixed |
-| **Level** | L1 / L2 / L3 (honest) |
-| **Notes** | One line — what worked or what broke |
+| **项目** | 仓库链接或产品名称 |
+| **模式** | 例如 Daily Triage + Issue Triage |
+| **工具** | Grok、Claude Code、Codex、Cursor、Windsurf、GitHub Actions 或混合使用 |
+| **级别** | L1 / L2 / L3（请如实填写） |
+| **备注** | 用一行说明哪些方面有效，哪些方面出了问题 |
 
-## Adopters
+<a id="adopters"></a>
 
-| Project | Pattern(s) | Tool | Level | Notes |
+## 采用者
+
+| 项目 | 模式 | 工具 | 级别 | 备注 |
 |---------|------------|------|-------|-------|
-| [loop-engineering](https://github.com/cobusgreyling/loop-engineering) (this repo) | Daily Triage, Changelog Drafter, audit dogfood | GitHub Actions + Grok | L3 | Reference implementation — `loop-audit` on every PR; readiness score 100 |
-| [loop-engineering](https://github.com/cobusgreyling/loop-engineering) (maintainer) | Post-Merge Cleanup | Grok + GitHub Actions | L1→L2 | Off-peak scan; verifier caught doc/API drift — see [story](../stories/post-merge-cleanup-honest-win.md) |
-| [loop-engineering](https://github.com/cobusgreyling/loop-engineering) (maintainer) | Issue Triage + Daily Triage | Grok | L1 | Issue queue feeder: propose labels only week one; pairs with morning `STATE.md` triage |
-| [loop-engineering](https://github.com/cobusgreyling/loop-engineering) (maintainer) | PR Babysitter, Dependency Sweeper | Grok / Claude Code | L2 | Assisted fixes in worktrees; human gate on merges; patch-only deps |
-| [Hermes Agent](https://github.com/NousResearch/hermes-agent) by [Nous Research](https://nousresearch.com) | Daily Triage | Hermes | L1 | Six loop primitives in one binary — `hermes cron` + skill + `delegate_task` + MCP + memory. Reference: [examples/hermes/daily-triage.md](../examples/hermes/daily-triage.md) |
+| [loop-engineering](https://github.com/cobusgreyling/loop-engineering)（本仓库） | Daily Triage, Changelog Drafter, audit 内部试用 | GitHub Actions + Grok | L3 | 参考实现 —— 每个 PR 都运行 `loop-audit`；就绪度得分为 100 |
+| [loop-engineering](https://github.com/cobusgreyling/loop-engineering)（维护者） | Post-Merge Cleanup | Grok + GitHub Actions | L1→L2 | 在非高峰时段扫描；验证器发现了文档与 API 之间的偏差 —— 请参阅[案例](../stories/post-merge-cleanup-honest-win.md) |
+| [loop-engineering](https://github.com/cobusgreyling/loop-engineering)（维护者） | Issue Triage + Daily Triage | Grok | L1 | Issue 队列输入源：第一周只提出标签建议；与每日早间的 `STATE.md` 问题分诊配合使用 |
+| [loop-engineering](https://github.com/cobusgreyling/loop-engineering)（维护者） | PR Babysitter, Dependency Sweeper | Grok / Claude Code | L2 | 在 Git 工作树中进行辅助修复；合并需通过人工审核关卡；仅允许补丁版本的依赖项更新 |
+| [Hermes Agent](https://github.com/NousResearch/hermes-agent)，由 [Nous Research](https://nousresearch.com) 提供 | Daily Triage | Hermes | L1 | 在一个二进制文件中集成六种循环原语 —— `hermes cron` + 技能 + `delegate_task` + MCP + 记忆。参考：[examples/hermes/daily-triage.md](../examples/hermes/daily-triage.md) |
 
-*Your project here — see [CONTRIBUTING.md](../CONTRIBUTING.md).*
+*欢迎在此添加你的项目 —— 请参阅 [CONTRIBUTING.md](../CONTRIBUTING.md)。*
 
-## Show & tell
+<a id="show--tell"></a>
 
-Prefer chat over a PR? Post in [GitHub Discussions → Show and tell](https://github.com/cobusgreyling/loop-engineering/discussions/categories/show-and-tell) with:
+## 展示与分享
 
-1. Which pattern you picked and why
-2. Your first `/loop` or scheduler command
-3. One surprise (good or bad)
+更愿意先交流而不是提交 PR？请在 [GitHub Discussions → 展示与分享](https://github.com/cobusgreyling/loop-engineering/discussions/categories/show-and-tell) 中发帖，并包含以下内容：
 
-Failure reports are first-class — see [stories/](../stories/).
+1. 你选择的模式及原因
+2. 你的第一条 `/loop` 或调度器命令
+3. 一个出乎意料的发现（无论好坏）
+
+失败报告也同样重要 —— 请参阅 [stories/](../stories/)。

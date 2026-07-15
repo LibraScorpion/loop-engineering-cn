@@ -1,85 +1,95 @@
 # loop-sync
 
-Detect and sync drift between Loop configuration files in your repository.
+检测并同步仓库中 Loop 配置文件之间的漂移。
 
-## Why loop-sync?
+<a id="why-loop-sync"></a>
+## 为什么使用 loop-sync？
 
-When working in teams, Loop configurations can drift over time:
+团队协作时，Loop 配置可能会随着时间推移而产生漂移：
 
-- STATE.md and LOOP.md get out of sync
-- Skills are updated but not reflected in configuration
-- Required files are missing
-- Configuration drifts from starters
+- STATE.md 与 LOOP.md 不再同步
+- 技能已更新，但配置中没有体现
+- 缺少必需文件
+- 配置偏离起始模板
 
-`loop-sync` detects these issues and provides actionable suggestions.
+`loop-sync` 会检测这些问题，并提供可执行的建议。
 
-## Installation
+<a id="installation"></a>
+## 安装
 
 ```bash
 npm install -g @cobusgreyling/loop-sync
-# or
+# 或
 npx @cobusgreyling/loop-sync .
 ```
 
-## Usage
+<a id="usage"></a>
+## 用法
 
 ```bash
 loop-sync [target-dir] [options]
 ```
 
-### Options
+<a id="options"></a>
+### 选项
 
-| Option | Description |
+| 选项 | 说明 |
 |--------|-------------|
-| `-a, --auto-fix` | Attempt to auto-fix issues (experimental) |
-| `-d, --dry-run` | Show what would be done without making changes |
-| `-v, --verbose` | Show detailed information |
-| `--json` | Output JSON format |
-| `-h, --help` | Show help |
+| `-a, --auto-fix` | 尝试自动修复问题（实验性功能） |
+| `-d, --dry-run` | 显示将执行的操作，但不实际进行更改 |
+| `-v, --verbose` | 显示详细信息 |
+| `--json` | 以 JSON 格式输出 |
+| `-h, --help` | 显示帮助信息 |
 
-### Examples
+<a id="examples"></a>
+### 示例
 
 ```bash
-# Basic sync check
+# 基本同步检查
 loop-sync .
 
-# Verbose output
+# 详细输出
 loop-sync ./my-project -v
 
-# JSON output for scripting
+# 输出 JSON，供脚本使用
 loop-sync ./my-project --json
 ```
 
-## What it checks
+<a id="what-it-checks"></a>
+## 检查内容
 
-1. **Required files**
-   - STATE.md (required)
-   - LOOP.md (required)
-   - AGENTS.md (recommended)
+1. **必需文件**
+   - STATE.md（必需）
+   - LOOP.md（必需）
+   - AGENTS.md（推荐）
 
-2. **STATE.md ↔ LOOP.md consistency**
-   - Structural similarity
-   - State file references
-   - Pattern consistency
+2. **STATE.md ↔ LOOP.md 一致性**
+   - 结构相似性
+   - 状态文件引用
+   - 模式一致性
 
-3. **Skills directory**
-   - Existence of `.claude/skills/`
-   - Version information in SKILL.md files
+3. **技能目录**
+   - `.claude/skills/` 是否存在
+   - SKILL.md 文件中的版本信息
 
-4. **Configuration drift**
-   - Missing references
-   - Orphaned files
-   - Inconsistencies
+4. **配置漂移**
+   - 缺失的引用
+   - 孤立文件
+   - 不一致之处
 
-## Score Interpretation
+<a id="score-interpretation"></a>
+## 分数解读
 
-| Score | Level | Meaning |
+| 分数 | 级别 | 含义 |
 |-------|-------|---------|
-| 90-100 | Healthy | No issues detected |
-| 70-89 | Warning | Minor inconsistencies |
-| 0-69 | Critical | Major issues need attention |
+| 90-100 | Healthy | 未检测到问题 |
+| 70-89 | Warning | 存在轻微的不一致 |
+| 0-69 | Critical | 存在需要处理的重大问题 |
 
-## Output Example
+<a id="output-example"></a>
+## 输出示例
+
+> 中文说明：以下为 `loop-sync` 的原始英文 CLI 输出示例，为避免固定机器文本发生变化而保持不变。
 
 ```
 Loop Sync Report
@@ -92,16 +102,18 @@ Score: 85/100 (healthy)
    - Run loop-init to scaffold missing files
 ```
 
-## Integration with CI/CD
+<a id="integration-with-cicd"></a>
+## 与 CI/CD 集成
 
-Add to your GitHub Actions workflow:
+将以下内容添加到 GitHub Actions 工作流中：
 
 ```yaml
 - name: Run loop-sync
   run: npx @cobusgreyling/loop-sync .
 ```
 
-## Development
+<a id="development"></a>
+## 开发
 
 ```bash
 cd tools/loop-sync
@@ -110,6 +122,7 @@ npm run build
 npm test
 ```
 
-## License
+<a id="license"></a>
+## 许可证
 
 MIT

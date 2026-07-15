@@ -1,99 +1,112 @@
-# Loop Design Checklist
+<a id="loop-design-checklist"></a>
+# 循环设计检查清单
 
-Use this before enabling a loop in production. Score honestly — a loop missing verification is not ready for unattended runs.
+在生产环境中启用循环前，请使用此清单。请如实评估——缺少验证的循环尚不具备无人值守运行的条件。
 
-## 1. Purpose & Scope
+<a id="1-purpose--scope"></a>
+## 1. 目标与范围
 
-- [ ] **Single clear goal** — one sentence: what does this loop accomplish?
-- [ ] **Explicit non-goals** — what will this loop *not* do?
-- [ ] **Watched scope** — which repos, branches, PRs, or tickets?
-- [ ] **Phased rollout** — report-only first, then act on small wins?
-- [ ] **Ambiguous input handled** — when a work item is too vague to verify "done", the loop clarifies it or escalates instead of guessing (scaffold the `loop-intake` skill via `loop-init` for issue-driven patterns)
+- [ ] **单一明确目标**——用一句话说明：此循环要完成什么？
+- [ ] **明确不做的事项**——此循环*不会*做什么？
+- [ ] **监控范围**——监控哪些仓库、分支、PR 或工单？
+- [ ] **分阶段上线**——先仅报告，再对容易解决的小问题采取行动？
+- [ ] **妥善处理含糊输入**——当工作项过于模糊，无法验证是否“完成”时，循环应先澄清或升级处理，而不是猜测（对于由议题驱动的模式，搭建 `loop-intake` 技能框架时使用 `loop-init`）
 
-## 2. Scheduling
+<a id="2-scheduling"></a>
+## 2. 调度
 
-- [ ] **Cadence chosen** — interval matches urgency (see pattern docs)
-- [ ] **Fire immediately** — first run on start, or wait for interval?
-- [ ] **Durable** — survives session/tool restart if needed?
-- [ ] **Off-hours behavior** — slower cadence or paused overnight?
-- [ ] **Self-cleanup** — `scheduler_delete` when watchlist empty?
+- [ ] **已选择运行节奏**——执行间隔与紧迫程度相匹配（参见模式文档）
+- [ ] **立即触发**——启动时立即首次运行，还是等待一个执行间隔？
+- [ ] **持久运行**——需要时能否在会话或工具重启后继续运行？
+- [ ] **非工作时间行为**——夜间降低执行频率还是暂停？
+- [ ] **自行清理**——监控列表为空时是否调用 `scheduler_delete`？
 
-## 3. Skills
+<a id="3-skills"></a>
+## 3. 技能
 
-- [ ] **Triage skill** exists with tight output format
-- [ ] **Action skills** (minimal-fix, etc.) match project conventions
-- [ ] **Skill descriptions** are boring and specific (good auto-triggering)
-- [ ] **Build/test commands** documented in skills or AGENTS.md
+- [ ] 已有输出格式严格的**问题分诊技能**
+- [ ] **操作技能**（minimal-fix 等）符合项目约定
+- [ ] **技能说明**平实且具体（有利于准确自动触发）
+- [ ] **构建／测试命令**已记录在技能或 AGENTS.md 中
 
-## 4. Maker / Checker Split
+<a id="4-maker--checker-split"></a>
+## 4. 执行者／检查者分离（Maker / Checker）
 
-- [ ] **Implementer** and **verifier** are separate (agent, model, or instructions)
-- [ ] Implementer **cannot** mark its own work "done"
-- [ ] Verifier runs **tests** in isolation (worktree) before approving
-- [ ] `/goal` or equivalent uses a **fresh model** for stop condition (if applicable)
+- [ ] **实施者**与**验证者**相互独立（可以是不同的智能体、模型或指令）
+- [ ] 实施者**不能**将自己的工作标记为“完成”
+- [ ] 验证者批准前，在隔离环境（Git 工作树）中运行**测试**
+- [ ] `/goal` 或等效机制使用**全新模型**判断停止条件（如适用）
 
-## 5. State / Memory
+<a id="5-state--memory"></a>
+## 5. 状态／记忆
 
-- [ ] **State file** or board schema documented
-- [ ] Loop **reads** prior state at start of every run
-- [ ] Loop **writes** outcomes, timestamps, last actions
-- [ ] **Prune** resolved/merged/closed items every run
-- [ ] Human overrides recorded in state
+- [ ] 已记录**状态文件**或看板结构
+- [ ] 循环每次开始运行时都**读取**先前状态
+- [ ] 循环**写入**结果、时间戳和最近执行的操作
+- [ ] 每次运行时**清理**已解决、已合并或已关闭的项目
+- [ ] 在状态中记录人工介入产生的变更
 
-## 6. Human Handoff
+<a id="6-human-handoff"></a>
+## 6. 人工交接
 
-- [ ] **Escalation triggers** explicit (max attempts, risk paths, ambiguity)
-- [ ] **Denylist paths** — auth, payments, secrets, infra (see [safety.md](./safety.md))
-- [ ] **Notification rule** — only ping human when action required
-- [ ] **Inbox** — where ambiguous items land (STATE.md section, Slack, Linear)
+- [ ] 明确**升级处理触发条件**（最大尝试次数、高风险路径、含糊情况）
+- [ ] **拒绝列表路径**——身份验证、支付、机密信息、基础设施（参见 [safety.md](./safety.md)）
+- [ ] **通知规则**——仅在需要采取行动时提醒人工
+- [ ] **收件箱**——含糊项目的归集位置（STATE.md 章节、Slack、Linear）
 
-## 7. Connectors (MCP)
+<a id="7-connectors-mcp"></a>
+## 7. 连接器（MCP）
 
-- [ ] Minimum permissions for connectors (read vs write)
-- [ ] Loop can **open/update PRs** or tickets if acting, not just suggest
-- [ ] Bot identity clear on PR comments (e.g. "Loop Engineering — PR Babysitter")
+- [ ] 根据读取或写入需求，为连接器授予最低权限
+- [ ] 如果循环要采取行动，它能够**创建／更新 PR** 或工单，而不只是提出建议
+- [ ] PR 评论中的机器人身份明确（例如“Loop Engineering — PR Babysitter”）
 
-## 8. Cost & Limits
+<a id="8-cost--limits"></a>
+## 8. 成本与限制
 
-- [ ] **Token budget** estimated (`npx @cobusgreyling/loop-cost`, [operating-loops.md](./operating-loops.md))
-- [ ] **`loop-budget.md`** with daily caps and kill switch
-- [ ] **`loop-run-log.md`** for append-only run history
-- [ ] **`loop-budget` skill** checks spend at start/end of each run
-- [ ] **Max iterations** per item per run
-- [ ] **Max auto-PRs** per day (cleanup loops)
-- [ ] **Pause/kill** criteria defined
+- [ ] 已估算 **token 预算**（`npx @cobusgreyling/loop-cost`、[operating-loops.md](./operating-loops.md)）
+- [ ] 在 **`loop-budget.md`** 中设置每日上限和紧急停止开关
+- [ ] 使用 **`loop-run-log.md`** 记录仅追加的运行历史
+- [ ] **`loop-budget` 技能**在每次运行开始和结束时检查支出
+- [ ] 设置每个项目在单次运行中的**最大迭代次数**
+- [ ] 设置每日**最大自动 PR 数**（清理循环）
+- [ ] 已定义**暂停／紧急停止**条件
 
-## 9. Observability
+<a id="9-observability"></a>
+## 9. 可观测性
 
-- [ ] **Log each run**: started, items found, actions taken, escalations
-- [ ] **Success metrics** chosen (see pattern docs)
-- [ ] Team can **inspect state file** without reading chat logs
+- [ ] **记录每次运行**：已启动、发现的项目、采取的操作、升级处理情况
+- [ ] 已选择**成功指标**（参见模式文档）
+- [ ] 团队无需阅读聊天日志即可**查看状态文件**
 
-## 10. Safety
+<a id="10-safety"></a>
+## 10. 安全
 
-- [ ] No auto-merge without explicit allowlist
-- [ ] Secrets/env files in denylist
-- [ ] Flake handling — don't "fix" intermittent tests with retries alone
+- [ ] 没有明确的允许列表时，不得自动合并
+- [ ] 将机密信息文件和环境文件加入拒绝列表
+- [ ] 妥善处理偶发失败——不要仅靠重试来“修复”间歇性测试失败
 
 ---
 
-## Readiness Levels
+<a id="readiness-levels"></a>
+## 就绪度级别
 
-| Level | Description | Checklist |
+| 等级 | 说明 | 检查清单 |
 |-------|-------------|-----------|
-| **L0 — Draft** | Documented intent only | §1 |
-| **L1 — Report** | Triage → state, no auto-action | §1–3, §5 |
-| **L2 — Assisted** | Small auto-fixes with verifier | §1–7 |
-| **L3 — Unattended** | Runs without you watching | All sections |
+| **L0 — 草案** | 仅记录意图 | §1 |
+| **L1 — 报告** | 问题分诊 → 状态，不自动操作 | §1–3、§5 |
+| **L2 — 辅助** | 由验证者验证的小规模自动修复 | §1–7 |
+| **L3 — 无人值守** | 无需人工监看即可运行 | 所有章节 |
 
-Run `loop-audit` in `tools/loop-audit/` to get a numeric Loop Readiness Score for your project.
+运行 `loop-audit`（位于 `tools/loop-audit/`），获取项目的数值型 Loop Readiness Score（循环就绪度分数）。
 
-## Quick Red Flags
+<a id="quick-red-flags"></a>
+## 快速识别危险信号
 
-Stop and fix before continuing if:
+如果出现以下情况，请停止并修复后再继续：
 
-- Same PR has had >3 automated fix attempts without progress
-- Verifier is the same agent session as implementer
-- No state file — loop has amnesia every run
-- Notifications on every run regardless of findings
-- Auto-merge enabled without path allowlist
+- 同一 PR 已自动尝试修复超过 3 次，却没有取得进展
+- 验证者与实施者使用同一个智能体会话
+- 没有状态文件——循环每次运行都会失去记忆
+- 无论是否有新发现，每次运行都发送通知
+- 未设置路径允许列表，却启用了自动合并

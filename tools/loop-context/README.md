@@ -1,33 +1,39 @@
 # loop-context
 
-**Stateful memory manager for agent loops.** Keeps the context window clean and stops runaway loops before they burn tokens.
+**面向智能体循环的有状态记忆管理器。** 保持上下文窗口整洁，并在失控循环消耗大量 token 之前将其停止。
 
-Long-running agent loops fail in two classic ways the [loop-engineering docs](../../docs/) warn about:
+[Loop Engineering 文档](../../docs/)提醒，长时间运行的智能体循环通常会以两种典型方式失败：
 
-- **Context overflow & rot** — conversation history and error logs grow until the model loses the original goal or drowns in stale stack traces.
-- **Stagnant / no-progress loops** — the agent retries the same failing action forever, quietly blowing the token budget.
+- **上下文溢出与劣化**——对话历史和错误日志持续增长，直至模型丢失最初目标，或被过时的堆栈跟踪淹没。
+- **停滞／无进展循环**——智能体无休止地重试同一个失败操作，不知不觉耗尽 token 预算。
 
-`loop-context` sits between the agent and its durable memory (`STATE.md`, run logs) and, before each iteration, does three things:
+`loop-context` 位于智能体与其持久记忆（`STATE.md`、运行日志）之间，并在每次迭代前完成三件事：
 
-1. **Summarize** what has been tried and what failed.
-2. **Prune** verbose stack traces, collapse repeated errors, and drop stale attempts outside a recent window.
-3. **Inject** only the essentials into the next prompt.
+1. **汇总**尝试过的操作及其失败情况。
+2. **裁剪**冗长的堆栈跟踪、合并重复错误，并丢弃近期窗口之外的过时尝试。
+3. 仅将必要信息**注入**下一条提示词。
 
-A **circuit breaker** watches iteration count, token spend, stagnation (same error N× in a row), and no-progress (too many consecutive failures) — and escalates to a human instead of looping in vain.
+**熔断器（circuit breaker）**会监控迭代次数、token 消耗、停滞（同一错误连续出现 N×）和无进展（连续失败次数过多），并将问题升级给人工处理，避免徒劳循环。
 
-Everything is **deterministic and dependency-free**: no LLM call is needed to summarize or prune, so it is cheap enough to run on every iteration.
+所有操作都**具有确定性且无需依赖项**：汇总或裁剪无需调用 LLM，因此成本足够低，可在每次迭代时运行。
 
-## Install / run
+<a id="install--run"></a>
+
+## 安装 / 运行
 
 ```bash
 npx @cobusgreyling/loop-context --help
-# or from this repo:
+# 或从此仓库运行：
 cd tools/loop-context && npm install && npm test
 ```
 
-## The ledger
+<a id="the-ledger"></a>
 
-The tool reads a **run ledger** — a JSON record of the loop's goal and its attempts:
+## 运行账本
+
+此工具读取一份**运行账本（run ledger）**，即记录循环目标和各次尝试的 JSON 数据。
+
+> 中文说明：以下为机器可读的 JSON 示例；为避免协议漂移，key、枚举值、错误签名及示例字符串保持英文原文。
 
 ```json
 {
@@ -41,71 +47,74 @@ The tool reads a **run ledger** — a JSON record of the loop's goal and its att
 }
 ```
 
-`outcome` is `success | failure | noop`. `error` and `tokensUsed` are optional.
+`outcome` 的取值为 `success | failure | noop`。`error` 和 `tokensUsed` 为可选字段。
 
-## Usage
+<a id="usage"></a>
+
+## 用法
 
 ```bash
-# Circuit breaker — exit 0 = continue, 2 = escalate (wire into a loop's control flow)
+# 熔断器——退出码 0 = continue，2 = escalate（接入循环的控制流）
 loop-context --check --ledger run.json
 
-# Compact context block for the next prompt
+# 为下一条提示词生成紧凑的上下文块
 loop-context --inject --ledger run.json
 
-# Factual rollup of the run
+# 生成本次运行的事实汇总
 loop-context --summary --ledger run.json --json
 
-# Pruned ledger (recent window, trimmed traces, collapsed repeats)
+# 输出裁剪后的账本（近期窗口、精简的跟踪信息、合并的重复项）
 loop-context --prune --ledger run.json
 
-# Pipe on stdin
+# 通过 stdin 管道传入
 cat run.json | loop-context --check
 ```
 
-### Options
+<a id="options"></a>
 
-| Flag | Default | Meaning |
+### 选项
+
+| 选项 | 默认值 | 说明 |
 |------|---------|---------|
-| `--max-iterations <n>` | 10 | Hard iteration cap |
-| `--stagnation <n>` | 3 | Escalate when the same error repeats N× in a row |
-| `--no-progress <n>` | 5 | Escalate after N consecutive failures |
-| `--token-budget <n>` | none | Escalate when cumulative tokens reach the cap |
-| `--window <n>` | 5 | Attempts kept when pruning |
-| `--max-trace-lines <n>` | 8 | Stack-trace lines kept when pruning |
+| `--max-iterations <n>` | 10 | 迭代次数硬上限 |
+| `--stagnation <n>` | 3 | 同一错误连续出现 N× 时升级处理 |
+| `--no-progress <n>` | 5 | 连续失败 N 次后升级处理 |
+| `--token-budget <n>` | none | 累计 token 用量达到上限时升级处理 |
+| `--window <n>` | 5 | 裁剪时保留的尝试次数 |
+| `--max-trace-lines <n>` | 8 | 裁剪时保留的堆栈跟踪行数 |
 
-Exit codes: `0` continue · `2` escalate · `1` error.
+退出码：`0` continue（继续）· `2` escalate（升级处理）· `1` error（错误）。
 
-## Resolving the token budget from a pattern
+<a id="resolving-the-token-budget-from-a-pattern"></a>
 
-Typing `--token-budget <n>` by hand means guessing. [`loop-cost`](../loop-cost) already
-computes a realistic per-run estimate for every pattern and readiness level, so resolve
-the cap from there instead:
+## 根据模式确定 token 预算
+
+手动输入 `--token-budget <n>` 只能依靠猜测。[`loop-cost`](../loop-cost) 已经会为每个模式和就绪度级别计算符合实际情况的单次运行估算值，因此应改为从中确定上限：
 
 ```bash
 loop-context --check --ledger run.json --budget-from-pattern ci-sweeper --budget-level L2
 ```
 
-| Flag | Default | Meaning |
+| 选项 | 默认值 | 说明 |
 |------|---------|---------|
-| `--budget-from-pattern <id>` | none | Pattern id to look up in `loop-cost`'s registry |
-| `--budget-level <L1\|L2\|L3>` | `L1` | Readiness level passed to `loop-cost` |
-| `--budget-scenario <realistic\|action\|report>` | `realistic` | Which `loop-cost` scenario to use as the cap |
-| `--budget-cadence <spec>` | pattern default | Cadence override passed through to `loop-cost` |
-| `--budget-conservative` | off | Use the slower cadence in a range (`loop-cost`'s own flag) |
+| `--budget-from-pattern <id>` | none | 要在 `loop-cost` 注册表中查找的 pattern ID |
+| `--budget-level <L1\|L2\|L3>` | `L1` | 传给 `loop-cost` 的就绪度级别 |
+| `--budget-scenario <realistic\|action\|report>` | `realistic` | 用作上限的 `loop-cost` 场景 |
+| `--budget-cadence <spec>` | pattern default | 透传给 `loop-cost` 的运行节奏覆盖值 |
+| `--budget-conservative` | off | 使用范围内较慢的运行节奏（`loop-cost` 自身的选项） |
 
-An explicit `--token-budget <n>` always wins over `--budget-from-pattern` — the derived
-value only fills in when no number was typed. `loop-context` shells out to `loop-cost`'s
-built CLI (monorepo sibling first, then an installed `@cobusgreyling/loop-cost`
-dependency) — the same resolution `loop-init` already uses for `loop-audit` — so the two
-packages stay independent at the source level; an unknown pattern id surfaces
-`loop-cost`'s own error instead of failing silently.
+显式指定的 `--token-budget <n>` 始终优先于 `--budget-from-pattern`；只有未输入数值时才会填入派生值。`loop-context` 会通过 shell 调用 `loop-cost` 已构建的 CLI（先查找 monorepo 中的同级目录，再查找已安装的 `@cobusgreyling/loop-cost` 依赖项）。这与 `loop-init` 已用于解析 `loop-audit` 的方式相同，因此两个包在源码层面保持独立；遇到未知 pattern ID 时会显示 `loop-cost` 自身的错误，而不会静默失败。
 
-## Populating the ledger
+<a id="populating-the-ledger"></a>
 
-Your loop control script appends one object per iteration to `run.json` (or pipes the same shape on stdin):
+## 填充运行账本
+
+循环控制脚本会在每次迭代时向 `run.json` 追加一个对象（也可以通过 stdin 管道传入相同的数据结构）。
+
+> 中文说明：以下 shell/JavaScript 示例包含机器可读的 JSON key、枚举值、错误签名和示例字符串；这些内容保持英文原文，纯说明性注释已翻译。
 
 ```bash
-# after each agent iteration — append attempt, then gate the next one
+# 每次智能体迭代后——追加一次尝试，再决定是否允许下一次迭代
 node -e "
 const fs = require('fs');
 const ledger = JSON.parse(fs.readFileSync('run.json', 'utf8'));
@@ -121,19 +130,23 @@ fs.writeFileSync('run.json', JSON.stringify(ledger, null, 2));
 loop-context --check --ledger run.json || { loop-context --inject --ledger run.json; exit 2; }
 ```
 
-Initialize once at loop start: `{ \"goal\": \"Get CI green on main\", \"attempts\": [] }`.
+在循环开始时初始化一次：`{ \"goal\": \"Get CI green on main\", \"attempts\": [] }`。
 
-## In a loop
+<a id="in-a-loop"></a>
+
+## 在循环中
 
 ```bash
-# inside your loop's control script, before each iteration:
+# 在循环控制脚本中，每次迭代前：
 if ! loop-context --check --ledger run.json; then
-  loop-context --inject --ledger run.json > escalation.md   # hand a clean summary to the human
-  exit 0                                                     # stop instead of retrying
+  loop-context --inject --ledger run.json > escalation.md   # 向人工处理者提供整洁的摘要
+  exit 0                                                     # 停止而不是重试
 fi
 ```
 
-## Library API
+<a id="library-api"></a>
+
+## 库 API
 
 ```ts
 import {
@@ -148,8 +161,10 @@ if (decision.escalate) escalateToHuman(decision.reason);
 else runNextIteration(buildContextInjection(ledger));
 ```
 
-## Where it fits
+<a id="where-it-fits"></a>
 
-This is the **Memory / State** primitive of loop engineering made dynamic: `STATE.md` stores state statically; `loop-context` manages it across iterations. See [docs/primitives.md](../../docs/primitives.md) and the [operating & safety](../../docs/) guides.
+## 它在体系中的位置
 
-MIT · part of [loop-engineering](https://github.com/cobusgreyling/loop-engineering) by Cobus Greyling.
+这是循环工程中 **Memory / State（记忆／状态）**原语的动态实现：`STATE.md` 以静态方式存储状态，`loop-context` 则跨迭代管理状态。请参阅 [docs/primitives.md](../../docs/primitives.md) 和[运行与安全指南](../../docs/)。
+
+MIT · [loop-engineering](https://github.com/cobusgreyling/loop-engineering) 的一部分，作者为 Cobus Greyling。
